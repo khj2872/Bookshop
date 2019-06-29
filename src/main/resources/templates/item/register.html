@@ -1,0 +1,308 @@
+{{> module/header}}
+
+<!--====================================================
+                        PAGE CONTENT
+======================================================-->
+    <div class="page-content d-flex align-items-stretch">
+
+        {{> module/sidebar}}
+
+        <div class="content-inner chart-cont" style="height:100vh">
+
+            <!--***** CONTENT *****-->     
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card form" id="form1">
+                        <div class="card-header">
+                            <h3>상품 등록</h3>
+                        </div>
+                        <br>
+
+                        <div class="table-responsive">
+                            <form name="sourceFile" action="/admin/item/register" method="post">
+                            <table class="table table-bordered">
+                                <tr>
+                                    <td>상품 분류</td>
+                                    <td>
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>메인카테고리</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <select style="width:100%" name="categoryId">
+                                                            {{#categoryList}}
+                                                            <option value="{{id}}">{{name}}</option>
+                                                            {{/categoryList}}
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>도서명</td>
+                                    <td><input type="text" name="name" class="form-control"></td>
+                                </tr>
+                                <tr>
+                                    <td>부제목</td>
+                                    <td><input type="text" name="subName" class="form-control"></td>
+                                </tr>
+                                <tr>
+                                    <td>저자</td>
+                                    <td><input type="text" name="writer" class="form-control"></td>
+                                </tr>
+                                <tr>
+                                    <td>저자 소개</td>
+                                    <td><input type="text" name="writerInfo" class="form-control"></td>
+                                </tr>
+                                <tr>
+                                    <td>역자</td>
+                                    <td><input type="text" name="translater" class="form-control"></td>
+                                </tr>
+                                <tr>
+                                    <td>ISBN</td>
+                                    <td><input type="text" name="ISBN" class="form-control"></td>
+                                </tr>
+                                <tr>
+                                    <td>쪽수</td>
+                                    <td><input type="text" name="pageSize" class="form-control">쪽</td>
+                                </tr>
+                                <tr>
+                                    <td>출간일</td>
+                                    <td><input type="text" name="publicationDate" class="form-control"></td>
+                                </tr>
+                                <tr>
+                                    <td>책 소개</td>
+                                    <td><input type="text" name="detail" class="form-control"></td>
+                                </tr>
+                                <tr>
+                                    <td>가격</td>
+                                    <td><input type="text" name="price" class="form-control">원</td>
+                                </tr>
+                                <tr>
+                                    <td>재고</td>
+                                    <td><input type="text" name="stock" class="form-control">부</td>
+                                </tr>
+                                <tr>
+                                    <td>적립률</td>
+                                    <td><input type="text" name="savingRate" class="form-control">%</td>
+                                </tr>
+                                <tr>
+                                    <td>도서 썸네일</td>
+                                    <td>
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading"><strong>Upload files</strong> <small> </small></div>
+                                            <div class="panel-body">
+                                                <br />
+                                                <div class="upload-drop-zone" id="drop-zone">
+                                                    Or drag and drop files here
+                                                </div>
+                                            </div>
+
+                                            <div class="panel-footer">
+                                                <div class="uploadedList"></div>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" name="image" id="image">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <button type="submit">submit</button>
+                                    </td>
+                                </tr>
+                            </table>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+
+        </div>
+    </div> 
+
+    <!--Global Javascript -->
+    <script src="{{springMacroRequestContext.request.contextPath}}/js/jquery.min.js"></script>
+    <script src="{{springMacroRequestContext.request.contextPath}}/js/popper/popper.min.js"></script>
+    <script src="{{springMacroRequestContext.request.contextPath}}/js/tether.min.js"></script>
+    <script src="{{springMacroRequestContext.request.contextPath}}/js/bootstrap.min.js"></script>
+    <script src="{{springMacroRequestContext.request.contextPath}}/js/jquery.cookie.js"></script>
+    <script src="{{springMacroRequestContext.request.contextPath}}/js/jquery.validate.min.js"></script>
+    <script src="{{springMacroRequestContext.request.contextPath}}/js/chart.min.js"></script>
+    <script src="{{springMacroRequestContext.request.contextPath}}/js/front.js"></script>
+
+    <script>
+        function getSubCategory(cid) {
+            $.ajax({
+                type: 'get',
+                url: '/category/sub/' + cid,
+                dataType: 'json',
+                success: function (data) {
+                    if(data) {
+                        console.log(data);
+                        var html = '';
+                        data.forEach(function (item, index, array) {
+                            console.log(item);
+                            html += '<option value="'+ item.id +'">' + item.name + '</option>';
+                        });
+                        $('#subCategory').empty();
+                        $('#subCategory').append(html);
+                    }
+                }
+            })
+        }
+
+    </script>
+    <script>
+        $("#drop-zone").on("dragenter dragover", function(event){
+            event.preventDefault();
+        });
+
+        $("#drop-zone").on("drop", function(event){
+            event.preventDefault();
+            var files = event.originalEvent.dataTransfer.files;
+
+            var file = files[0];
+
+            //console.log(file);
+
+            var formData = new FormData(); // HTML5
+            formData.append("file", file);
+
+            $.ajax({
+                url: '/admin/item/upload',
+                data: formData,
+                dataType: 'text',
+                processData: false,
+                contentType: false,
+                type: 'POST',
+                success: function(data){
+                    // //서버로 파일을 전송한 다음에 그 파일을 다시 받아온다.?
+                    // var parseData = JSON.parse(data);
+                    //
+                    // $('#uploadedId').val(parseData.fileInfo.id);
+                    //
+                    // //이미지 인경우 썸네일을 보여준다.
+                    // if(checkImageType(parseData.uploadedFileName)){
+                    //     str = "<div>"
+                    //         + "<a href='/admin/item/upload/displayFile?fileName=" + getImageLink(parseData.uploadedFileName) + "'>"
+                    //         + "<img src='/admin/item/upload/displayFile?fileName=" + parseData.uploadedFileName + "'/>"
+                    //         + "</a>"
+                    //         + "<small data-src='" + parseData.uploadedFileName + "'>X</small></div>";
+                    // } else {
+                    //     str = "<div>"
+                    //         + "<a href='/admin/item/upload/displayFile?fileName=" + parseData.uploadedFileName + "'>"
+                    //         + getOriginalName(parseData.uploadedFileName) + "</a>"
+                    //         + "<small data-src='" + parseData.uploadedFileName + "'>X</small></div>";
+                    // }//else
+                    //
+                    // $(".uploadedList").append(str);
+
+                    $('#image').val(data);
+
+                    var str = "<div>"
+                                + "<a href='" + data + "'>"
+                                + "<img style='height: 100px' src='" + data + "'/>"
+                                + "</a>"
+                                + "<small>X</small>" +
+                              "</div>";
+
+                    $(".uploadedList").append(str);
+
+                },
+            });// ajax
+
+        });
+
+
+        /* 컨트롤러로 부터 전송받은 파일이 이미지 파일인지 확인하는 함수 */
+        function checkImageType(fileName){
+            var pattern = /jpg$|gif$|png$|jpeg$/i;
+            return fileName.match(pattern);
+        }//checkImageType
+
+        //파일 이름 처리 : UUID 가짜 이름 제거
+        function getOriginalName(fileName){
+            if(checkImageType(fileName)){
+                return;
+            }
+
+            var idx = fileName.indexOf("_") + 1;
+            return fileName.substr(idx);
+
+        }//getOriginalName
+
+        //이미지 원본 링크 제공
+        function getImageLink(fileName){
+
+            if(!checkImageType(fileName)){
+                return;
+            }
+
+            var front = fileName.substr(0, 12);
+            var end = fileName.substr(14);
+
+            return front + end;
+
+        }//getImageLink
+
+
+        //업로드 파일 삭제 처리
+        $(".uploadedList").on("click", "small", function(event){
+
+            var that = $(this);
+
+            alert($(this).attr("data-src"));
+
+            $.ajax({
+                url: "/admin/item/upload/deleteFile",
+                type: "post",
+                data: {fileName:$(this).attr("data-src")},
+                dataType: "text",
+                success : function(result){
+                    if(result == 'deleted'){
+                        //alert("deleted");
+                        that.parent("div").remove();
+                    }//
+                },
+            });
+
+        });//uploadedList
+    </script>
+
+    <!--Core Javascript -->
+    <script>
+        new Chart(document.getElementById("myChart4").getContext('2d'), {
+          type: 'doughnut',
+          data: {
+            labels: ["M", "T", "W", "T", "F", "S", "S"],
+            datasets: [{
+              backgroundColor: [
+                "#2ecc71",
+                "#3498db",
+                "#95a5a6",
+                "#9b59b6",
+                "#f1c40f",
+                "#e74c3c",
+                "#34495e"
+              ],
+              data: [12, 19, 3, 17, 28, 24, 7]
+            }]
+          },
+          options: {
+              legend: { display: false },
+              title: {
+                display: true,
+                text: ''
+               } 
+            }
+        });
+    </script>
+</body>
+
+</html>

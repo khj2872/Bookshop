@@ -1,0 +1,213 @@
+{{> module/header}}
+
+<style>
+    .menu .accordion-heading {  position: relative; }
+    .menu .accordion-heading .edit {
+        position: absolute;
+        top: 8px;
+        right: 30px;
+    }
+    .menu .area { border-left: 4px solid #f38787; }
+    .menu .equipamento { border-left: 4px solid #65c465; }
+    .menu .ponto { border-left: 4px solid #98b3fa; }
+    .menu .collapse.in { overflow: visible; }
+
+
+    .accordion{margin-bottom:20px;}
+    .accordion-group{margin-bottom:2px;border:1px solid #e5e5e5;-webkit-border-radius:4px;-moz-border-radius:4px;border-radius:4px;}
+    .accordion-heading{border-bottom:0;}
+    .accordion-heading .accordion-toggle{display:block;padding:8px 15px;}
+    .accordion-toggle{cursor:pointer;}
+    .accordion-inner{padding:9px 15px;border-top:1px solid #e5e5e5;}
+
+
+    .modal.modal-center {
+        text-align: center;
+    }
+
+    @media screen and (min-width: 768px) {
+        .modal.modal-center:before {
+            display: inline-block;
+            vertical-align: middle;
+            content: " ";
+            height: 100%;
+        }
+    }
+
+    .modal-dialog.modal-center {
+        display: inline-block;
+        text-align: left;
+        vertical-align: middle;
+    }
+
+</style>
+
+<!--====================================================
+                        PAGE CONTENT
+======================================================-->
+<div class="page-content d-flex align-items-stretch">
+
+    {{> module/sidebar}}
+
+    <div class="content-inner chart-cont" style="height:100vh">
+
+        <!--***** CONTENT *****-->
+        <div class="row">
+
+            <div class="col-md-12 first-button">
+                <div class="col-md-3">
+                <div class="form-group row">
+                    <label for="categoryName" class=" col-form-label">메인 카테고리 명</label>
+                    <div class="col-9">
+                        <input class="form-control" type="text" id="categoryName"><button type="button" onCLick="addCategory()">추가</button>
+
+                    </div>
+                </div>
+                </div>
+
+                <div class="menu">
+                    <div class="col-md-6">
+                    <div class="accordion">
+
+                        <!-- 여기다 메인카테고리 추가 -->
+                        {{#categoryList}}
+                        <div class="accordion-group">
+                            <!-- 메인카테고리 1 -->
+                            <div class="accordion-heading area">
+                                <a class="accordion-toggle" data-toggle="collapse" href="#area{{id}}">
+                                    {{name}}
+                                </a>
+                            </div>
+                            <!-- 메인카테고리 1  -->
+                            <!--<div class="accordion-body collapse" id="area{{id}}">-->
+                                <!--<div class="accordion-inner">-->
+                                    <!--&lt;!&ndash; 여기다 2차 카테고리 추가 &ndash;&gt;-->
+                                    <!--{{#child}}-->
+                                    <!--<div class="accordion" id="equipamento1">-->
+                                        <!--<div class="accordion-group">-->
+                                            <!--<div class="accordion-heading equipamento">-->
+                                                <!--<a class="accordion-toggle" data-toggle="collapse">{{name}}</a>-->
+                                            <!--</div>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                    <!--{{/child}}-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        </div>
+                        {{/categoryList}}
+                        <!-- Modal 창 -->
+                        <!--<div class="modal modal-center fade" tabindex="-1" role="dialog" id="addSub">-->
+                            <!--<div class="modal-dialog modal-center" role="document">-->
+                                <!--<div class="modal-content">-->
+                                    <!--<div class="modal-header">-->
+                                        <!--서브 카테고리 추가-->
+                                    <!--</div>-->
+                                    <!--<div class="modal-body">-->
+                                        <!--<input type="hidden" id="id"/>-->
+                                        <!--<input type="text" class="form-control" id="subCategoryName" placeholder="서브 카테고리 명" /><br>-->
+                                    <!--</div>-->
+                                    <!--<div class="modal-footer">-->
+                                        <!--<button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>-->
+                                        <!--<button type="button" class="btn btn-primary" onclick="addSubCategory()">추가</button>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                <!--&lt;!&ndash; /.modal-content &ndash;&gt;-->
+                            <!--</div>-->
+                            <!--&lt;!&ndash; /.modal-dialog &ndash;&gt;-->
+                        <!--</div>-->
+                    </div><!-- /accordion -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!--Global Javascript -->
+<script src="{{springMacroRequestContext.request.contextPath}}/js/jquery.min.js"></script>
+<script src="{{springMacroRequestContext.request.contextPath}}/js/popper/popper.min.js"></script>
+<script src="{{springMacroRequestContext.request.contextPath}}/js/tether.min.js"></script>
+<script src="{{springMacroRequestContext.request.contextPath}}/js/bootstrap.min.js"></script>
+<script src="{{springMacroRequestContext.request.contextPath}}/js/jquery.cookie.js"></script>
+<script src="{{springMacroRequestContext.request.contextPath}}/js/jquery.validate.min.js"></script>
+<script src="{{springMacroRequestContext.request.contextPath}}/js/chart.min.js"></script>
+<script src="{{springMacroRequestContext.request.contextPath}}/js/front.js"></script>
+
+<script>
+    function addCategory() {
+        var categoryName = $('#categoryName').val();
+        console.log(categoryName);
+        $.ajax({
+            type: 'post',
+            url: '/category/main',
+            data: {name : categoryName},
+            dataType: 'json',
+            success: function(data) {
+                if(data) {
+                    location.reload();
+                } else {
+                    console.log('error');
+                }
+
+            }
+        });
+    }
+
+    function addSubBtn(cid) {
+        $('#id').val(cid);
+    }
+
+    function addSubCategory() {
+        var id = $('#id').val();
+        console.log('id : ' + id);
+        var subCategoryName = $('#subCategoryName').val();
+
+        $.ajax({
+            type: 'post',
+            url: '/category/sub',
+            data: {parentId : id, name : subCategoryName},
+            dataType: 'json',
+            success: function(data) {
+                if(data) {
+                    location.reload();
+                } else {
+                    console.log('error');
+                }
+            }
+        })
+    }
+</script>
+
+
+<!--Core Javascript -->
+<script>
+    new Chart(document.getElementById("myChart4").getContext('2d'), {
+        type: 'doughnut',
+        data: {
+            labels: ["M", "T", "W", "T", "F", "S", "S"],
+            datasets: [{
+                backgroundColor: [
+                    "#2ecc71",
+                    "#3498db",
+                    "#95a5a6",
+                    "#9b59b6",
+                    "#f1c40f",
+                    "#e74c3c",
+                    "#34495e"
+                ],
+                data: [12, 19, 3, 17, 28, 24, 7]
+            }]
+        },
+        options: {
+            legend: { display: false },
+            title: {
+                display: true,
+                text: ''
+            }
+        }
+    });
+</script>
+</body>
+
+</html>
