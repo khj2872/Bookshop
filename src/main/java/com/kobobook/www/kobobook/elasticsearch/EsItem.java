@@ -15,23 +15,15 @@ import java.util.Date;
 public class EsItem {
 
     @Id
-    private Integer itemid;
+    private Integer item_id;
 
     private String name;
 
-    private String subName;
-
     private String writer;
-
-    private String writerInfo;
-
-    private String translater;
 
     private String ISBN;
 
-    private String pageSize;
-
-    private String publicationdate;
+    private String publicationDate;
 
     private Date regDate;
 
@@ -40,8 +32,6 @@ public class EsItem {
     private Long price;
 
     private Long stock;
-
-    private Integer savingRate;
 
     private String image;
 

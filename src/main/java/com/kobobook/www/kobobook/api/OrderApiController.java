@@ -1,18 +1,22 @@
 package com.kobobook.www.kobobook.api;
 
-import com.kobobook.www.kobobook.domain.Address;
-import com.kobobook.www.kobobook.domain.Cart;
-import com.kobobook.www.kobobook.domain.Order;
-import com.kobobook.www.kobobook.repository.MemberRepository;
+import com.kobobook.www.kobobook.domain.Member;
+import com.kobobook.www.kobobook.domain.OrderSearch;
+import com.kobobook.www.kobobook.domain.OrderStatus;
+import com.kobobook.www.kobobook.dto.MemberDTO;
+import com.kobobook.www.kobobook.dto.OrderInfo;
+import com.kobobook.www.kobobook.dto.OrderDTO;
 import com.kobobook.www.kobobook.service.JwtService;
+import com.kobobook.www.kobobook.service.MemberService;
 import com.kobobook.www.kobobook.service.OrderService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.elasticsearch.repository.support.AbstractElasticsearchRepository;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.jaxb.SpringDataJaxb;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,45 +24,25 @@ import java.util.Map;
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/orders")
+@Slf4j
+@AllArgsConstructor
 public class OrderApiController {
 
-    @Autowired
     private OrderService orderService;
 
-    @Autowired
+    private MemberService memberService;
+
     private JwtService jwtService;
 
-    @Autowired
-    private MemberRepository memberRepository;
-
-    /*
-    * 결제 항목 불러오기
-    * */
-    @GetMapping("/list")
-    public ResponseEntity<Map<String, Object>> readOrderList(@RequestParam("id") Integer[] cartIdList) {
-        System.out.println(Arrays.toString(cartIdList));
-        Map<String, Object> orderInfo = new HashMap<>();
-        orderInfo.put("member", memberRepository.findById((Integer) jwtService.get("member").get("id")).orElse(null));
-        orderInfo.put("orderList", orderService.readOrderList(cartIdList));
-        return new ResponseEntity<>(orderInfo, HttpStatus.OK);
-    }
-
-    /*
-    * 단일항목 결제
-    * */
-//    @PostMapping("")
-//    public ResponseEntity<Integer> createOrder(Address address,
-//                                            @RequestParam("itemId") Integer itemId,
-//                                            @RequestParam("count") int count) {
-//        return new ResponseEntity<>(orderService.order((Integer)jwtService.get("member").get("id"), itemId, count), HttpStatus.OK);
-//    }
+    private ModelMapper modelMapper;
 
     /*
     * 결제 처리
     * */
     @PostMapping("")
-    public ResponseEntity<Integer> createCartOrder(@RequestBody Address address, Integer[] cartId) {
-        return new ResponseEntity<>(orderService.cartOrder((Integer) jwtService.get("member").get("id"), cartId), HttpStatus.OK);
+    public ResponseEntity<Integer> createCartOrder(@RequestBody OrderInfo orderInfo) {
+        Integer orderId = orderService.cartOrder((Integer) jwtService.get("member").get("id"), orderInfo);
+        return new ResponseEntity<>(orderId, HttpStatus.OK);
     }
 
     /*
@@ -66,12 +50,48 @@ public class OrderApiController {
     * */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteOrder(@PathVariable("id") Integer cartId) {
-        orderService.cancelOrder(cartId);
+        try {
+            orderService.cancelOrder(cartId);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /*
-    *
+    * 주문/배송조회
     * */
+    @GetMapping("")
+    public ResponseEntity<Map<String, Object>> readCompleteOrderList(@RequestParam("itemName") String itemName,
+                                                                     @RequestParam("orderStatus") OrderStatus orderStatus,
+                                                                     @RequestParam("page") int page,
+                                                                     @RequestParam("size") int size) {
+        Integer memberId = (Integer) jwtService.get("member").get("id");
+        List<OrderDTO> orderDTOList = orderService.readCompleteOrderList(memberId, new OrderSearch(itemName, orderStatus));
+
+        Map<String, Object> returnMap = new HashMap<>();
+        returnMap.put("member", memberService.readMember(memberId));
+        returnMap.put("orders", orderDTOList);
+        return new ResponseEntity<>(returnMap, HttpStatus.OK);
+    }
+
+    /*
+    * 주문 상세보기
+    * */
+    @GetMapping("/{id}")
+    public ResponseEntity<Map<String, Object>> readOrderDetail(@PathVariable("id") Integer orderId) {
+
+        MemberDTO memberDTO = memberService.readMember((Integer) jwtService.get("member").get("id"));
+
+        OrderDTO orderDTO = orderService.readOrderDetail(orderId);
+
+        Map<String, Object> returnMap = new HashMap<>();
+        returnMap.put("member", memberDTO);
+        returnMap.put("order", orderDTO);
+
+        return new ResponseEntity<>(returnMap, HttpStatus.OK);
+    }
 
 }

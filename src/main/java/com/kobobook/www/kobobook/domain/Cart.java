@@ -22,16 +22,16 @@ public class Cart {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Item item;
 
-    private Long price;
+    private long price;
 
-    private Long count;
+    private int count;
 
-    private Integer savingRate;
+    private double savingRate;
 
-    public static Cart createCart(Member member, Item item,long count, int savingRate) {
+    public static Cart createCart(Member member, Item item, int count, double savingRate) {
         Cart cart = new Cart();
         cart.setMember(member);
         cart.setItem(item);

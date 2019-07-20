@@ -1,10 +1,12 @@
 package com.kobobook.www.kobobook.api;
 
 import com.kobobook.www.kobobook.domain.Member;
+import com.kobobook.www.kobobook.dto.MemberDTO;
 import com.kobobook.www.kobobook.exception.AlreadyExistingMemberException;
 import com.kobobook.www.kobobook.repository.MemberRepository;
 import com.kobobook.www.kobobook.service.JwtService;
 import com.kobobook.www.kobobook.service.MemberService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -14,15 +16,11 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/members")
+@AllArgsConstructor
 public class MemberApiController {
 
-    @Autowired
     private MemberService memberService;
 
-    @Autowired
-    private MemberRepository memberRepository;
-
-    @Autowired
     private JwtService jwtService;
 
     /*
@@ -30,12 +28,8 @@ public class MemberApiController {
     * */
     @PostMapping("/oauth_login")
     public ResponseEntity<String> createOauth(@RequestBody Member member) {
-//        System.out.println(member);
-
         Member loginMember = memberService.save(member);
-//        System.out.println("아아아아아아ㅏ아시발");
         String token = jwtService.createMember("member", loginMember, "user");
-//        System.out.println("ㅇㄻㄴㅇㄻㄴㅇㄻㄴㅇㄹ");
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", token);
 
@@ -84,12 +78,12 @@ public class MemberApiController {
         return new ResponseEntity<>(token, headers, HttpStatus.OK);
     }
 
-//    /*
-//    * 회원정보 출력
-//    * */
-//    @GetMapping("/")
-//    public ResponseEntity<Member> readMember() {
-//        return new ResponseEntity<>(memberRepository.findById((Integer) jwtService.get("member").get("id")).orElse(null), HttpStatus.OK);
-//    }
+    /*
+    * 회원정보 출력
+    * */
+    @GetMapping("/")
+    public ResponseEntity<MemberDTO> readMember() {
+        return new ResponseEntity<>(memberService.readMember((Integer) jwtService.get("member").get("id")), HttpStatus.OK);
+    }
 
 }

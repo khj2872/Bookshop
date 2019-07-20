@@ -1,12 +1,8 @@
 package com.kobobook.www.kobobook.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.kobobook.www.kobobook.exception.NotEnoughStockException;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -24,17 +20,9 @@ public class Item {
 
     private String name;
 
-    private String subName;
-
     private String writer;
 
-    private String writerInfo;
-
-    private String translater;
-
     private String ISBN;
-
-    private String pageSize;
 
     private String publicationDate;
 
@@ -47,34 +35,22 @@ public class Item {
     @Lob
     private String detail;
 
-    private Long price;
+    private long price;
 
-    private Long stock;
+    private long stock;
 
-    private Integer savingRate;
+    private double savingRate;
 
-    private Float avgRating;
+    private double avgRating;
 
-    @ManyToOne
-    @JsonManagedReference
+//    @JsonManagedReference
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Category category;
-
-    @JsonIgnore
-    @Transient
-    private int categoryId;
 
     private String image;
 
-    @JsonBackReference
     @OneToMany(mappedBy = "item")
     private List<Review> reviews = new ArrayList<>();
-
-    @OneToOne(fetch = FetchType.LAZY)
-    private UploadFile uploadFile;
-
-    @JsonIgnore
-    @Transient
-    private int uploadedId;
 
     /* 재고 추가 */
     public void addStock(long quantity) {

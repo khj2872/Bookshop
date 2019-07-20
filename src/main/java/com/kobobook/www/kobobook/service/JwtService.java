@@ -11,6 +11,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -20,10 +21,10 @@ public class JwtService {
     private static final String SALT = "kangSecret";
 
     public <T> String createMember(String key, T data, String subject) {
-        System.out.println("허허허");
         String jwt = Jwts.builder()
                 .setHeaderParam("typ", "JWT")
                 .setHeaderParam("regDate", System.currentTimeMillis())
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60)) //만료시간 = 현재시간 + 1일
                 .setSubject(subject)
                 .claim(key, data)
                 .signWith(SignatureAlgorithm.HS256, this.generateKey())
@@ -43,26 +44,14 @@ public class JwtService {
     }
 
     public boolean isUsable(String jwt) throws UnauthorizedException {
-        try{
+        try {
             Jws<Claims> claims = Jwts.parser()
                     .setSigningKey(this.generateKey())
                     .parseClaimsJws(jwt);
             return true;
-
-        }catch (Exception e) {
+        } catch (Exception e) {
             System.out.println("JwtService isUsable() error");
-//            e.printStackTrace();
             throw new UnauthorizedException();
-//            if(log.isInfoEnabled()){
-//                e.printStackTrace();
-//            }else{
-//                log.error(e.getMessage());
-//            }
-//            throw new UnauthorizedException();
-
-            //개발환경!!!
-
-
         }
     }
 

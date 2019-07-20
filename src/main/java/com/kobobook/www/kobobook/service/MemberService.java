@@ -1,34 +1,37 @@
 package com.kobobook.www.kobobook.service;
 
 import com.kobobook.www.kobobook.domain.Member;
+import com.kobobook.www.kobobook.domain.Role;
+import com.kobobook.www.kobobook.dto.MemberDTO;
 import com.kobobook.www.kobobook.exception.AlreadyExistingMemberException;
 import com.kobobook.www.kobobook.exception.IdPasswordNotMatchingException;
 import com.kobobook.www.kobobook.repository.MemberRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
 @Service
+@AllArgsConstructor
 public class MemberService {
 
-    @Autowired
     private MemberRepository memberRepository;
+
+    private ModelMapper modelMapper;
 
     /*
     * OAuth 회원가입 및 로그인
     * */
     @Transactional
     public Member save(Member member) {
-        member.setRole("USER");
+        member.setRole(Role.ROLE_USER);
         member.setRegDate(new Date());
         Member loginMember = memberRepository.findByOauthId(member.getOauthId());
         if(loginMember == null) {
-            System.out.println("loginMember1 : " + loginMember);
             return memberRepository.save(member);
         }
-        System.out.println("loginMember2 : " + loginMember);
         return loginMember;
     }
 
@@ -64,10 +67,19 @@ public class MemberService {
         if(chkMember != null) {
             throw new AlreadyExistingMemberException("dup id " + member.getUserEmail());
         } else {
-            member.setRole("USER");
+            member.setRole(Role.ROLE_USER);
             member.setRegDate(new Date());
             memberRepository.save(member);
         }
+    }
+
+    /*
+    * 회원정보
+    * */
+    @Transactional
+    public MemberDTO readMember(Integer memberId) {
+        Member member = memberRepository.findById(memberId).orElse(null);
+        return modelMapper.map(member, MemberDTO.class);
     }
 
 }

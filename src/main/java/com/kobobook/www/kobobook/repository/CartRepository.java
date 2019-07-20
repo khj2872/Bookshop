@@ -11,5 +11,6 @@ import java.util.List;
 public interface CartRepository extends JpaRepository<Cart, Integer> {
     Cart findByMemberAndItem(Member member, Item item);
 
+    @Query("SELECT c FROM Cart c JOIN FETCH c.item WHERE c.member = :member")
     List<Cart> findByMember(Member member);
 }

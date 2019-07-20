@@ -1,29 +1,19 @@
 package com.kobobook.www.kobobook.service;
 
-import com.kobobook.www.kobobook.config.EsClient;
 import com.kobobook.www.kobobook.domain.Category;
+import com.kobobook.www.kobobook.dto.CategoryDTO;
 import com.kobobook.www.kobobook.repository.CategoryRepository;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
-import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
+@AllArgsConstructor
 public class CategoryService {
 
-    @Autowired
     private CategoryRepository categoryRepository;
-
-    @Autowired
-    private EsClient client;
 
     /*
     * 카테고리 리스트
@@ -58,7 +48,7 @@ public class CategoryService {
 //    }
 
     @Transactional
-    public List<Category> readCategoryList() {
-        return categoryRepository.findAll();
+    public List<CategoryDTO> readCategoryList() {
+        return categoryRepository.findCategoriesAll();
     }
 }

@@ -1,86 +1,63 @@
 package com.kobobook.www.kobobook.service;
 
 import com.kobobook.www.kobobook.domain.*;
+import com.kobobook.www.kobobook.dto.OrderInfo;
+import com.kobobook.www.kobobook.dto.OrderDTO;
 import com.kobobook.www.kobobook.repository.*;
+import com.kobobook.www.kobobook.repository.custom.OrderRepositoryImpl;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class OrderService {
 
-    @Autowired
     private MemberRepository memberRepository;
 
-    @Autowired
-    private ItemRepository itemRepository;
-
-    @Autowired
     private OrderRepository orderRepository;
 
-    @Autowired
-    private DeliveryRepository deliveryRepository;
-
-    @Autowired
     private CartRepository cartRepository;
 
-    @Autowired
     private OrderItemRepository orderItemRepository;
 
-    /*
-    * 단일상품 주문
-    * */
-    @Transactional
-    public Integer order(Integer memberId, Integer itemId, int count) {
-        Member member = memberRepository.findById(memberId).orElse(null);
-        Item item = itemRepository.findById(itemId).orElse(null);
+    private OrderRepositoryImpl orderRepositoryImpl;
 
-        Delivery delivery = new Delivery(member.getAddress(), DeliveryStatus.READY);
-
-        OrderItem orderItem = OrderItem.createOrderItem(item, item.getPrice(), count);
-
-        Order order = Order.createOrder(member, delivery, orderItem);
-
-        member.setPoint(member.getPoint() + item.getPrice() * count * item.getSavingRate() / 100);
-
-        memberRepository.save(member);
-        orderRepository.save(order);
-
-        return order.getId();
-    }
+    private ModelMapper modelMapper;
 
     /*
-    * 장바구니 상품 주문
+    * 다중 상품 주문
     * */
     @Transactional
-    public Integer cartOrder(Integer memberId, Integer[] cartId) {
+    public Integer cartOrder(Integer memberId, OrderInfo orderInfo) {
         Member member = memberRepository.findById(memberId).orElse(null);
 
-        OrderItem[] orderItems = new OrderItem[cartId.length];
+        OrderItem[] orderItems = new OrderItem[orderInfo.getOrderListId().length];
 
-        long point = 0;
+        long savingPoint = 0;
 
-        for(int i=0; i<cartId.length; i++) {
-            Cart cart = cartRepository.findById(cartId[i]).orElse(null);
-            Item item = itemRepository.findById(cart.getItem().getId()).orElse(null);
-            orderItems[i] = OrderItem.createOrderItem(item, item.getPrice(), cart.getCount());
-            point += item.getPrice() * cart.getCount() * item.getSavingRate() / 100;
+        for(int i = 0; i< orderInfo.getOrderListId().length; i++) {
+            Cart cart = cartRepository.findById(orderInfo.getOrderListId()[i]).orElse(null);
+            orderItems[i] = OrderItem.createOrderItem(cart.getItem(), cart.getItem().getPrice(), cart.getCount());
+            savingPoint += cart.getItem().getPrice() * cart.getCount() * cart.getItem().getSavingRate() / 100;
+            cartRepository.delete(cart);
         }
 
-        Delivery delivery = new Delivery(member.getAddress(), DeliveryStatus.READY);
+        Delivery delivery = new Delivery(orderInfo, DeliveryStatus.READY);
 
-        Order order = Order.createOrder(member, delivery, orderItems);
+        Order order = Order.createOrder(member, delivery, orderInfo.getUsingPoint(), savingPoint, orderItems);
 
-        member.setPoint(member.getPoint() + point);
+        member.setPoint(member.getPoint() - orderInfo.getUsingPoint());
 
-        memberRepository.save(member);
-        orderRepository.save(order);
+        Order newOrder = orderRepository.save(order);
 
-        return order.getId();
+        System.out.println("newOrder.getId() : " + newOrder.getId());
+
+        return newOrder.getId();
     }
 
     /*
@@ -97,34 +74,35 @@ public class OrderService {
     * 주문 취소
     * */
     @Transactional
-    public void cancelOrder(Integer orderId) {
+    public void cancelOrder(Integer orderId) throws RuntimeException{
         Order order = orderRepository.findById(orderId).orElse(null);
         order.cancel();
     }
 
-    /*
-    *
-    * */
-    @Transactional
-    public List<Cart> readOrderList(Integer[] cartIdList) {
-        List<Cart> orderList = new ArrayList<>();
-        for(Integer id : cartIdList) {
-
-            Cart cart = cartRepository.findById(id).orElse(null);
-            Item item = itemRepository.findById(cart.getItem().getId()).orElse(null);
-            cart.setPrice(item.getPrice());
-            orderList.add(cart);
-        }
-        return orderList;
-    }
 
     /*
     * 주문 완료 목록 조회
     * */
     @Transactional
-    public List<Order> readCompleteOrderList(Integer memberId) {
-        Member member = memberRepository.findById(memberId).orElse(null);
-        return orderRepository.findByMember(member);
+    public List<OrderDTO> readCompleteOrderList(Integer memberId, OrderSearch orderSearch) {
+        return orderRepositoryImpl.searchList(memberId, orderSearch).stream()
+                .map(o -> convertToDto(o))
+                .collect(Collectors.toList());
     }
+
+    /*
+    * 주문 상세내역 조회
+    * */
+    @Transactional
+    public OrderDTO readOrderDetail(Integer orderId) {
+        return convertToDto(orderRepositoryImpl.searchOrderDetail(orderId));
+    }
+
+    private OrderDTO convertToDto(Order order) {
+        OrderDTO orderDto = modelMapper.map(order, OrderDTO.class);
+        orderDto.setTotalPrice(order.getTotalPrice());
+        return orderDto;
+    }
+
 
 }

@@ -11,9 +11,8 @@ import lombok.ToString;
 @AllArgsConstructor
 public class OrderSearch {
 
-    private String memberName;
+    private String itemName;
+
     private OrderStatus orderStatus;
-
-
 
 }

@@ -3,83 +3,96 @@ package com.kobobook.www.kobobook.service;
 import com.kobobook.www.kobobook.domain.Item;
 import com.kobobook.www.kobobook.domain.Member;
 import com.kobobook.www.kobobook.domain.Review;
+import com.kobobook.www.kobobook.dto.ReviewDTO;
+import com.kobobook.www.kobobook.exception.UnauthorizedException;
 import com.kobobook.www.kobobook.repository.ItemRepository;
 import com.kobobook.www.kobobook.repository.MemberRepository;
 import com.kobobook.www.kobobook.repository.ReviewRepository;
+import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class ReviewService {
 
-    @Autowired
     private ReviewRepository reviewRepository;
 
-    @Autowired
     private ItemRepository itemRepository;
 
-    @Autowired
     private MemberRepository memberRepository;
+
+    private ModelMapper modelMapper;
 
     /*
     * 상품 리뷰 작성
     * */
     @Transactional
-    public List<Review> createReview(Integer memberId, Integer itemId, String content, float rating) {
+    public List<ReviewDTO> createReview(Integer memberId, Review review) {
         Member member = memberRepository.findById(memberId).orElse(null);
-        Item item = itemRepository.findById(itemId).orElse(null);
+        Item item = itemRepository.findById(review.getItem().getId()).orElse(null);
 
-        Review review = Review.createReview(member, item, rating, content);
+        Review newReview = Review.createReview(member, item, review.getRating(), review.getContent());
 
-        reviewRepository.save(review);
+        reviewRepository.save(newReview);
 
         item.setAvgRating(reviewRepository.findAvgRatingByItem(item));
 
-        return readReviewList(itemId);
+        return convertToDto(reviewRepository.findByItem(item.getId()));
     }
 
-    /*
-    * 해당 아이템 리뷰 리스트 출력
-    * */
-    private List<Review> readReviewList(Integer itemId) {
-        Item item = itemRepository.findById(itemId).orElse(null);
-        return reviewRepository.findByItem(item);
-    }
 
     /*
     * 리뷰 삭제
     * */
     @Transactional
-    public List<Review> deleteReview(Integer reviewId) {
-        Review review = reviewRepository.findById(reviewId).orElse(null);
-        reviewRepository.delete(review);
-        return readReviewList(review.getItem().getId());
+    public List<ReviewDTO> deleteReview(Integer memberId, Review review) throws UnauthorizedException {
+        if(authCheck(memberId, review)) {
+            reviewRepository.delete(review);
+            return readReviewList(review.getItem().getId());
+        } else {
+            throw new UnauthorizedException("삭제 권한이 없는 사용자입니다.");
+        }
     }
 
     /*
     * 리뷰 수정
     * */
     @Transactional
-    public List<Review> updateReview(Integer reviewId, String content) {
-        Review review = reviewRepository.findById(reviewId).orElse(null);
-        review.setContent(content);
-        reviewRepository.save(review);
-        return readReviewList(review.getItem().getId());
+    public List<ReviewDTO> updateReview(Integer memberId, Review review, String content) throws UnauthorizedException {
+        if(authCheck(memberId, review)) {
+            review.setContent(content);
+            Review newReview = reviewRepository.save(review);
+            return readReviewList(newReview.getItem().getId());
+        } else {
+            throw new UnauthorizedException("수정 권한이 없는 사용자입니다.");
+        }
     }
 
     /*
-    * 권한체크
-    * */
-    @Transactional
-    public Boolean authCheck(Integer memberId, Integer reviewId) {
-        Member member = memberRepository.findById(memberId).orElse(null);
-        Review review = reviewRepository.findById(reviewId).orElse(null);
+     * 해당 아이템 리뷰 리스트 출력
+     * */
+    private List<ReviewDTO> readReviewList(Integer itemId) {
+        return convertToDto(reviewRepository.findByItem(itemId));
+    }
 
-        if(member.getId() == review.getMember().getId()) return true;
-        else return false;
+    /*
+    * 삭제 시 권한체크
+    * */
+    private Boolean authCheck(Integer memberId, Review review) {
+        return memberId == review.getMember().getId();
+    }
+
+    private List<ReviewDTO> convertToDto(List<Review> reviewList) {
+        return reviewList.stream()
+                .map(r -> modelMapper.map(r, ReviewDTO.class))
+                .collect(Collectors.toList());
     }
 
 }

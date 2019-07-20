@@ -3,7 +3,6 @@ package com.kobobook.www.kobobook.repository.custom;
 import com.kobobook.www.kobobook.domain.Order;
 import com.kobobook.www.kobobook.domain.OrderSearch;
 import com.kobobook.www.kobobook.domain.OrderStatus;
-import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
@@ -12,8 +11,10 @@ import org.springframework.util.StringUtils;
 
 import java.util.List;
 
-import static com.kobobook.www.kobobook.domain.QMember.member;
+import static com.kobobook.www.kobobook.domain.QDelivery.delivery;
+import static com.kobobook.www.kobobook.domain.QItem.item;
 import static com.kobobook.www.kobobook.domain.QOrder.order;
+import static com.kobobook.www.kobobook.domain.QOrderItem.orderItem;
 
 @Repository
 public class OrderRepositoryImpl extends QuerydslRepositorySupport implements CustomOrderRepository {
@@ -25,29 +26,44 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements Cu
         this.queryFactory = queryFactory;
     }
 
-
     @Override
-    public List<Order> search(OrderSearch orderSearch) {
+    public List<Order> searchList(Integer memberId, OrderSearch orderSearch) {
         return queryFactory
-                .selectFrom(order)
-                .leftJoin(order.member, member)
-                .where(containsMemberName(orderSearch.getMemberName()),
+                .selectDistinct(order).from(order)
+                .join(order.orderItems, orderItem).fetchJoin()
+                .join(orderItem.item, item).fetchJoin()
+                .join(order.delivery, delivery).fetchJoin()
+                .where(containsItemName(orderSearch.getItemName()),
                         eqOrderStatus(orderSearch.getOrderStatus()))
+                .where(order.member.id.eq(memberId))
+                .orderBy(order.orderDate.desc())
                 .fetch();
     }
 
     @Override
-    public List<Order> findByStatus(OrderStatus orderStatus) {
-        return queryFactory.selectFrom(order).where(order.status.eq(orderStatus)).fetch();
+    public Order searchOrderDetail(Integer orderId) {
+        return queryFactory
+                .selectDistinct(order).from(order)
+                .join(order.orderItems, orderItem).fetchJoin()
+                .join(orderItem.item, item).fetchJoin()
+                .join(order.delivery, delivery).fetchJoin()
+                .where(order.id.eq(orderId))
+                .fetchOne();
     }
 
-    private BooleanExpression containsMemberName(String name) {
+    /*
+    * 상품명 검색 포함
+    * */
+    private BooleanExpression containsItemName(String name) {
         if(StringUtils.isEmpty(name)) {
             return null;
         }
-        return member.username.contains(name);
+        return orderItem.item.name.contains(name);
     }
 
+    /*
+    * 주문상태 검색 포함
+    * */
     private BooleanExpression eqOrderStatus(OrderStatus orderStatus) {
         if(StringUtils.isEmpty(orderStatus)) {
             return null;

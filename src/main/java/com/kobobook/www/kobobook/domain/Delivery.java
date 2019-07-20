@@ -1,13 +1,16 @@
 package com.kobobook.www.kobobook.domain;
 
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.kobobook.www.kobobook.dto.OrderInfo;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 public class Delivery {
 
@@ -18,14 +21,24 @@ public class Delivery {
     @Embedded
     private Address address;
 
-    @OneToOne(mappedBy = "delivery")
+    @JsonIgnore
+    @OneToOne(mappedBy = "delivery", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Order order;
 
     @Enumerated(EnumType.STRING)
     private DeliveryStatus status;
 
-    public Delivery(Address address, DeliveryStatus status) {
-        this.address = address;
+    public Delivery(OrderInfo orderInfo, DeliveryStatus status) {
+        this.address = orderInfo.getAddress();
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "Delivery{" +
+                "id=" + id +
+                ", address=" + address +
+                ", status=" + status +
+                '}';
     }
 }

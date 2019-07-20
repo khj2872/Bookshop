@@ -2,6 +2,7 @@ package com.kobobook.www.kobobook.interceptor;
 
 import com.kobobook.www.kobobook.exception.UnauthorizedException;
 import com.kobobook.www.kobobook.service.JwtService;
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +14,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Component
+@AllArgsConstructor
 public class JwtInterceptor implements HandlerInterceptor {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtInterceptor.class);
     private static final String HEADER_AUTH = "Authorization";
 
-    @Autowired
     private JwtService jwtService;
 
     @Override

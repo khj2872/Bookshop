@@ -1,5 +1,7 @@
 package com.kobobook.www.kobobook.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -10,24 +12,24 @@ import javax.persistence.criteria.CriteriaBuilder;
 @Entity
 @Getter
 @Setter
-@ToString
 public class OrderItem {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ORDER_ITEM_ID")
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
     private Order order;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Item item;
 
-    private Long price;
+    private long price;
 
-    private Long count;
+    private int count;
 
-    public static OrderItem createOrderItem(Item item, long price, long count) {
+    public static OrderItem createOrderItem(Item item, long price, int count) {
         OrderItem orderItem = new OrderItem();
         orderItem.setItem(item);
         orderItem.setPrice(price);
@@ -45,4 +47,13 @@ public class OrderItem {
         return getPrice() * getCount();
     }
 
+    @Override
+    public String toString() {
+        return "OrderItem{" +
+                "id=" + id +
+                ", item=" + item +
+                ", price=" + price +
+                ", count=" + count +
+                '}';
+    }
 }

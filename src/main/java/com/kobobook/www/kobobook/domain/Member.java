@@ -1,9 +1,9 @@
 package com.kobobook.www.kobobook.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -13,6 +13,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Member {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,8 +30,8 @@ public class Member {
 
     private String oauthId;
 
-    @Column(nullable = false)
-    private String role;
+    @Enumerated(value = EnumType.STRING)
+    private Role role;
 
     private String phone;
 
@@ -48,5 +49,21 @@ public class Member {
 
     public boolean matchPassword(String password) {
         return this.getPassword().equals(password);
+    }
+
+    @Override
+    public String toString() {
+        return "Member{" +
+                "id=" + id +
+                ", userEmail='" + userEmail + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", oauthId='" + oauthId + '\'' +
+                ", role='" + role + '\'' +
+                ", phone='" + phone + '\'' +
+                ", address=" + address +
+                ", regDate=" + regDate +
+                ", point=" + point +
+                '}';
     }
 }

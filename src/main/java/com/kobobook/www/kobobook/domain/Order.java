@@ -1,5 +1,6 @@
 package com.kobobook.www.kobobook.domain;
 
+import com.fasterxml.jackson.annotation.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -17,34 +18,41 @@ public class Order {
     @Column(name = "ORDER_ID")
     private Integer id;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Member member;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
-
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date orderDate;
-
-    private int discount;
-
-    private int savingPoint;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Delivery delivery;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date orderDate;
+
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
-    public static Order createOrder(Member member, Delivery delivery, OrderItem... orderItems) {
+    private long usingPoint;
+
+    private long savingPoint;
+
+    public static Order createOrder(Member member, Delivery delivery, long usingPoint, long savingPoint, OrderItem... orderItems) {
         Order order = new Order();
+
         order.setMember(member);
         member.getOrders().add(order);
+
         order.setDelivery(delivery);
         delivery.setOrder(order);
+
         for(OrderItem orderItem : orderItems) {
             order.addOrderItem(orderItem);
         }
+
+        order.setUsingPoint(usingPoint);
+        order.setSavingPoint(savingPoint);
         order.setStatus(OrderStatus.ORDER);
         order.setOrderDate(new Date());
         return order;
@@ -53,11 +61,11 @@ public class Order {
     //==비즈니스 로직==//
     /** 주문 취소 */
     public void cancel() {
-        if (delivery.getStatus() == DeliveryStatus.COMP) {
+        if (this.delivery.getStatus() == DeliveryStatus.COMP) {
             throw new RuntimeException("이미 배송완료된 상품은 취소가 불가능합니다.");
         }
 
-        this.setStatus(OrderStatus.CALCEL);
+        this.setStatus(OrderStatus.CANCEL);
         for (OrderItem orderItem : orderItems) {
             orderItem.cancel();
         }
@@ -79,4 +87,17 @@ public class Order {
         orderItem.setOrder(this);
     }
 
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", member=" + member +
+                ", orderItems=" + orderItems +
+                ", delivery=" + delivery +
+                ", orderDate=" + orderDate +
+                ", status=" + status +
+                ", usingPoint=" + usingPoint +
+                ", savingPoint=" + savingPoint +
+                '}';
+    }
 }

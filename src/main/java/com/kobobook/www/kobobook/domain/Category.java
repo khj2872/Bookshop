@@ -3,9 +3,9 @@ package com.kobobook.www.kobobook.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -22,8 +22,14 @@ public class Category {
 
     private String name;
 
-    @JsonBackReference
     @OneToMany(mappedBy = "category")
     private List<Item> items = new ArrayList<>();
 
+    @Override
+    public String toString() {
+        return "Category{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }
