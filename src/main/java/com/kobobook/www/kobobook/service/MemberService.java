@@ -4,7 +4,6 @@ import com.kobobook.www.kobobook.domain.Member;
 import com.kobobook.www.kobobook.domain.Role;
 import com.kobobook.www.kobobook.dto.MemberDTO;
 import com.kobobook.www.kobobook.exception.AlreadyExistingMemberException;
-import com.kobobook.www.kobobook.exception.IdPasswordNotMatchingException;
 import com.kobobook.www.kobobook.repository.MemberRepository;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -25,7 +24,7 @@ public class MemberService {
     * OAuth 회원가입 및 로그인
     * */
     @Transactional
-    public Member save(Member member) {
+    public Member oauthSignUp(Member member) {
         member.setRole(Role.ROLE_USER);
         member.setRegDate(new Date());
         Member loginMember = memberRepository.findByOauthId(member.getOauthId());
@@ -36,18 +35,10 @@ public class MemberService {
     }
 
     /*
-    * 로그인 성공 후 회원이름 반환
-    * */
-    @Transactional
-    public String findUserName(int id) {
-        return memberRepository.findUserNameById(id).getUsername();
-    }
-
-    /*
     * 로그인
     * */
     @Transactional
-    public Member login(String userEmail, String password) throws IdPasswordNotMatchingException {
+    public Member login(String userEmail, String password) {
         Member member = memberRepository.findByUserEmail(userEmail);
         if(member == null) {
             return null;
@@ -67,6 +58,7 @@ public class MemberService {
         if(chkMember != null) {
             throw new AlreadyExistingMemberException("dup id " + member.getUserEmail());
         } else {
+            member.setPassword(member.getPassword());
             member.setRole(Role.ROLE_USER);
             member.setRegDate(new Date());
             memberRepository.save(member);

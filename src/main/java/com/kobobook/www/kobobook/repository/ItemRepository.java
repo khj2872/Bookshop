@@ -15,7 +15,7 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
 
     @Query("SELECT i " +
             "FROM Item i JOIN FETCH i.category LEFT JOIN FETCH i.reviews " +
-            "WHERE i.id = :itemId")
-    Item findItemWithCategoryAndReview(Integer itemId);
+            "WHERE i.id = :itemId ")
+    Item findItemWithCategoryAndReviews(Integer itemId);
 
 }

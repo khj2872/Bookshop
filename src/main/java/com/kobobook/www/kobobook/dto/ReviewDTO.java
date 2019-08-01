@@ -4,24 +4,20 @@ import lombok.*;
 
 import java.util.Date;
 
-
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class ReviewDTO {
+    private Integer id;
 
-    @Getter
-    @Setter
-    @ToString
-    @NoArgsConstructor
-    @AllArgsConstructor
-    static class Review {
-        private Integer id;
+    private MemberDTO member;
 
-        private MemberDTO member;
+    private double rating;
 
-        private double rating;
+    private Date regDate;
 
-        private Date regDate;
-
-        private String content;
-    }
+    private String content;
 
 }

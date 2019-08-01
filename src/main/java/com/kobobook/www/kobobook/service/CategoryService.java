@@ -4,6 +4,7 @@ import com.kobobook.www.kobobook.domain.Category;
 import com.kobobook.www.kobobook.dto.CategoryDTO;
 import com.kobobook.www.kobobook.repository.CategoryRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,6 +49,7 @@ public class CategoryService {
 //    }
 
     @Transactional
+    @Cacheable(value = "categoryListCache")
     public List<CategoryDTO> readCategoryList() {
         return categoryRepository.findCategoriesAll();
     }

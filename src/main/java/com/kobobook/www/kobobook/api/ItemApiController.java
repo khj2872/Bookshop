@@ -1,14 +1,20 @@
 package com.kobobook.www.kobobook.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kobobook.www.kobobook.domain.Item;
+import com.kobobook.www.kobobook.domain.Review;
 import com.kobobook.www.kobobook.dto.ItemDTO;
+import com.kobobook.www.kobobook.dto.ReviewDTO;
 import com.kobobook.www.kobobook.elasticsearch.Autocomplete;
 import com.kobobook.www.kobobook.elasticsearch.EsItem;
 import com.kobobook.www.kobobook.exception.UnauthorizedException;
 import com.kobobook.www.kobobook.repository.ItemRepository;
+import com.kobobook.www.kobobook.repository.ReviewRepository;
 import com.kobobook.www.kobobook.service.ItemService;
 import com.kobobook.www.kobobook.service.JwtService;
+import com.kobobook.www.kobobook.service.ReviewService;
+import io.jsonwebtoken.JwtException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.search.sort.SortOrder;
@@ -34,7 +40,7 @@ public class ItemApiController {
 
     private ItemService itemService;
 
-    private ItemRepository itemRepository;
+    private ReviewService reviewService;
 
     private JwtService jwtService;
 
@@ -70,10 +76,6 @@ public class ItemApiController {
     public ResponseEntity<Map<String, Object>> searchItems(@PathVariable String userQuery,
                                                            @PathVariable String searchOption,
                                                            Pageable pageable) {
-//        log.info("userQuery : " + userQuery);
-//        log.info("searchOption : " + searchOption);
-//        log.info("page : " + pageable.getPageNumber() + " " + pageable.getOffset());
-//        log.info("size : " + pageable.getPageSize());
         Page<EsItem> itemPage = itemService.searchItems(userQuery, searchOption, pageable);
         Map<String, Object> returnMap = new HashMap<>();
 
@@ -87,24 +89,30 @@ public class ItemApiController {
     * 아이템 상세정보
     * */
     @GetMapping("/{itemId}")
-    public ResponseEntity<Object> readItemDetail(@PathVariable("itemId") Integer itemId, HttpServletRequest request) {
-        try {
-            final String token = request.getHeader("Authorization");
-            if(token != null && jwtService.isUsable(token)) {
-                Integer memberId = (Integer) jwtService.get("member").get("id");
-
-                // memberId, itemId 로그 기록
-                Map<String, Object> resultMap = new TreeMap<>();
-                resultMap.put("memberId", memberId);
-                resultMap.put("itemId", itemId);
-                log.info(new ObjectMapper().writeValueAsString(resultMap));
-
-            }
-        } catch (UnauthorizedException e) {
-            e.printStackTrace();
-        } finally {
-            ItemDTO.ItemDetail itemDTO = itemService.findItem(itemId);
-            return new ResponseEntity<>(itemDTO, HttpStatus.OK);
+    public ResponseEntity<Map<String, Object>> readItemDetail(@PathVariable("itemId") Integer itemId, HttpServletRequest request) throws Exception {
+        final String token = request.getHeader("Authorization");
+        if(token != null) {
+            itemClickLog(itemId, token);
         }
+
+        ItemDTO.ItemWithCategory item = itemService.readItemDetail(itemId);
+        List<ReviewDTO> reviews = reviewService.readReviewList(item.getId());
+
+        Map<String, Object> returnMap = new HashMap<>();
+        returnMap.put("item", item);
+        returnMap.put("reviews" ,reviews);
+
+        return new ResponseEntity<>(returnMap, HttpStatus.OK);
+    }
+
+    private void itemClickLog(Integer itemId, String token) throws JsonProcessingException {
+        jwtService.jwtValidate(token);
+        Integer memberId = (Integer) jwtService.getString("userId");
+
+        // memberId, itemId 로그 기록
+        Map<String, Object> resultMap = new TreeMap<>();
+        resultMap.put("memberId", memberId);
+        resultMap.put("itemId", itemId);
+        log.info(new ObjectMapper().writeValueAsString(resultMap));
     }
 }

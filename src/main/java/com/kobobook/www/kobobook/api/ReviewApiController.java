@@ -11,7 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -27,17 +29,17 @@ public class ReviewApiController {
     * 리뷰 등록 후 리뷰 목록 리턴
     * */
     @PostMapping("")
-    public ResponseEntity<List<ReviewDTO>> createReview(@RequestBody Review review) {
-        return new ResponseEntity<>(reviewService.createReview((Integer) jwtService.get("member").get("id"), review), HttpStatus.OK);
+    public ResponseEntity<Map<String, Object>> createReview(@RequestBody Review review) {
+        return new ResponseEntity<>(reviewService.createReview((Integer) jwtService.getString("userId"), review), HttpStatus.OK);
     }
 
     /*
     * 해당 리뷰 삭제 후 리뷰 목록 리턴
     * */
     @DeleteMapping("/{id}")
-    public ResponseEntity<List<ReviewDTO>> deleteReview(@PathVariable("id") Review review) {
+    public ResponseEntity<Map<String, Object>> deleteReview(@PathVariable("id") Integer id) {
         try {
-            return new ResponseEntity<>(reviewService.deleteReview((Integer) jwtService.get("member").get("id"), review), HttpStatus.OK);
+            return new ResponseEntity<>(reviewService.deleteReview((Integer) jwtService.getString("userId"), id), HttpStatus.OK);
         } catch (UnauthorizedException ue) {
             ue.printStackTrace();
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -50,7 +52,7 @@ public class ReviewApiController {
     @PutMapping("/{id}")
     public ResponseEntity<List<ReviewDTO>> updateReview(@PathVariable("id") Review review, @RequestParam("content") String content) {
         try {
-            return new ResponseEntity<>(reviewService.updateReview((Integer) jwtService.get("member").get("id"), review, content), HttpStatus.OK);
+            return new ResponseEntity<>(reviewService.updateReview((Integer) jwtService.getString("userId"), review, content), HttpStatus.OK);
         } catch (UnauthorizedException ue) {
             ue.printStackTrace();
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);

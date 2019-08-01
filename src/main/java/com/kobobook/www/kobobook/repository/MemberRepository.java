@@ -9,8 +9,6 @@ import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Integer> {
 
-    Member findUserNameById(int id);
-
     Member findByOauthId(String oauthId);
 
     Member findByUserEmail(String userEmail);

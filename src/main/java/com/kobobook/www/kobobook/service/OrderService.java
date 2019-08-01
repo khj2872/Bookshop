@@ -23,23 +23,21 @@ public class OrderService {
 
     private CartRepository cartRepository;
 
-    private OrderItemRepository orderItemRepository;
+    private DeliveryRepository deliveryRepository;
 
     private OrderRepositoryImpl orderRepositoryImpl;
 
     private ModelMapper modelMapper;
 
     /*
-    * 다중 상품 주문
+    * 상품 주문
     * */
     @Transactional
     public Integer cartOrder(Integer memberId, OrderInfo orderInfo) {
         Member member = memberRepository.findById(memberId).orElse(null);
-
         OrderItem[] orderItems = new OrderItem[orderInfo.getOrderListId().length];
 
         long savingPoint = 0;
-
         for(int i = 0; i< orderInfo.getOrderListId().length; i++) {
             Cart cart = cartRepository.findById(orderInfo.getOrderListId()[i]).orElse(null);
             orderItems[i] = OrderItem.createOrderItem(cart.getItem(), cart.getItem().getPrice(), cart.getCount());
@@ -48,26 +46,11 @@ public class OrderService {
         }
 
         Delivery delivery = new Delivery(orderInfo, DeliveryStatus.READY);
-
         Order order = Order.createOrder(member, delivery, orderInfo.getUsingPoint(), savingPoint, orderItems);
-
         member.setPoint(member.getPoint() - orderInfo.getUsingPoint());
-
         Order newOrder = orderRepository.save(order);
 
-        System.out.println("newOrder.getId() : " + newOrder.getId());
-
         return newOrder.getId();
-    }
-
-    /*
-    * 배송 처리
-    * */
-    @Transactional
-    public void startOrder(Integer orderItemId) {
-        OrderItem orderItem = orderItemRepository.findById(orderItemId).orElse(null);
-        orderItem.getOrder().getDelivery().setStatus(DeliveryStatus.COMP);
-        orderItemRepository.save(orderItem);
     }
 
     /*
@@ -79,6 +62,14 @@ public class OrderService {
         order.cancel();
     }
 
+    /*
+    * 배송완료 확인
+    * */
+    @Transactional
+    public void completeOrder(Integer orderId) {
+        Order order = orderRepository.findOrderWithMemberAndDelivery(orderId);
+        order.complete();
+    }
 
     /*
     * 주문 완료 목록 조회
@@ -103,6 +94,5 @@ public class OrderService {
         orderDto.setTotalPrice(order.getTotalPrice());
         return orderDto;
     }
-
 
 }

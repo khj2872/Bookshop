@@ -40,10 +40,7 @@ public class Order {
 
     public static Order createOrder(Member member, Delivery delivery, long usingPoint, long savingPoint, OrderItem... orderItems) {
         Order order = new Order();
-
         order.setMember(member);
-        member.getOrders().add(order);
-
         order.setDelivery(delivery);
         delivery.setOrder(order);
 
@@ -61,14 +58,22 @@ public class Order {
     //==비즈니스 로직==//
     /** 주문 취소 */
     public void cancel() {
-        if (this.delivery.getStatus() == DeliveryStatus.COMP) {
-            throw new RuntimeException("이미 배송완료된 상품은 취소가 불가능합니다.");
+        if (this.delivery.getStatus() == DeliveryStatus.COMP || this.delivery.getStatus() == DeliveryStatus.DELIVERY) {
+            throw new RuntimeException("이미 배송중이거나 완료된 상품은 취소가 불가능합니다.");
         }
 
         this.setStatus(OrderStatus.CANCEL);
         for (OrderItem orderItem : orderItems) {
             orderItem.cancel();
         }
+    }
+
+    /** 배송 완료*/
+    public void complete() {
+        this.getDelivery().setStatus(DeliveryStatus.COMP);
+        // 적립 예정 포인트 적립
+        long point = this.getMember().getPoint() + this.getSavingPoint();
+        this.getMember().setPoint(point);
     }
 
     //==조회 로직==//

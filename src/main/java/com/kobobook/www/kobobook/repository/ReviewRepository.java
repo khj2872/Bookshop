@@ -10,10 +10,12 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface ReviewRepository extends JpaRepository<Review, Integer> {
-    @Query("SELECT r FROM Review r WHERE r.item.id = :itemId")
+    @Query("SELECT r FROM Review r JOIN FETCH r.member WHERE r.item.id = :itemId ORDER BY r.regDate DESC")
     List<Review> findByItem(Integer itemId);
 
     @Query("SELECT AVG(r.rating) FROM Review r WHERE r.item = :item")
     Double findAvgRatingByItem(Item item);
 
+    @Query("SELECT r FROM Review r JOIN FETCH r.item WHERE r.id = :reviewId")
+    Review findReviewWithItem(Integer reviewId);
 }

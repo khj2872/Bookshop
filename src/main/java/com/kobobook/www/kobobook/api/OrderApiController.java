@@ -1,6 +1,5 @@
 package com.kobobook.www.kobobook.api;
 
-import com.kobobook.www.kobobook.domain.Member;
 import com.kobobook.www.kobobook.domain.OrderSearch;
 import com.kobobook.www.kobobook.domain.OrderStatus;
 import com.kobobook.www.kobobook.dto.MemberDTO;
@@ -12,7 +11,6 @@ import com.kobobook.www.kobobook.service.OrderService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.jaxb.SpringDataJaxb;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +39,7 @@ public class OrderApiController {
     * */
     @PostMapping("")
     public ResponseEntity<Integer> createCartOrder(@RequestBody OrderInfo orderInfo) {
-        Integer orderId = orderService.cartOrder((Integer) jwtService.get("member").get("id"), orderInfo);
+        Integer orderId = orderService.cartOrder((Integer) jwtService.getString("userId"), orderInfo);
         return new ResponseEntity<>(orderId, HttpStatus.OK);
     }
 
@@ -68,7 +66,7 @@ public class OrderApiController {
                                                                      @RequestParam("orderStatus") OrderStatus orderStatus,
                                                                      @RequestParam("page") int page,
                                                                      @RequestParam("size") int size) {
-        Integer memberId = (Integer) jwtService.get("member").get("id");
+        Integer memberId = (Integer) jwtService.getString("userId");
         List<OrderDTO> orderDTOList = orderService.readCompleteOrderList(memberId, new OrderSearch(itemName, orderStatus));
 
         Map<String, Object> returnMap = new HashMap<>();
@@ -83,8 +81,7 @@ public class OrderApiController {
     @GetMapping("/{id}")
     public ResponseEntity<Map<String, Object>> readOrderDetail(@PathVariable("id") Integer orderId) {
 
-        MemberDTO memberDTO = memberService.readMember((Integer) jwtService.get("member").get("id"));
-
+        MemberDTO memberDTO = memberService.readMember((Integer) jwtService.getString("userId"));
         OrderDTO orderDTO = orderService.readOrderDetail(orderId);
 
         Map<String, Object> returnMap = new HashMap<>();
@@ -92,6 +89,15 @@ public class OrderApiController {
         returnMap.put("order", orderDTO);
 
         return new ResponseEntity<>(returnMap, HttpStatus.OK);
+    }
+
+    /*
+    * 배송 완료
+    * */
+    @GetMapping("/{id}")
+    public ResponseEntity<Void> completeOrder(@PathVariable("id") Integer orderId) {
+        orderService.completeOrder(orderId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

@@ -2,6 +2,7 @@ package com.kobobook.www.kobobook.dto;
 
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -12,7 +13,7 @@ public class ItemDTO {
     @ToString
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ItemDetail {
+    public static class ItemWithCategory implements Serializable {
         private Integer id;
 
         private String name;
@@ -41,8 +42,6 @@ public class ItemDTO {
 
         private CategoryDTO category;
 
-        private List<ReviewDTO.Review> reviews;
-
     }
 
     @Getter
@@ -50,7 +49,7 @@ public class ItemDTO {
     @ToString
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ItemSimple {
+    public static class ItemSimple implements Serializable {
         private Integer id;
 
         private String name;
@@ -58,6 +57,8 @@ public class ItemDTO {
         private long price;
 
         private String image;
+
+        private double avgRating;
     }
 
     @Getter
@@ -65,7 +66,7 @@ public class ItemDTO {
     @ToString
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Item {
+    public static class Item implements Serializable {
         private Integer id;
 
         private String name;
@@ -93,7 +94,5 @@ public class ItemDTO {
         private double avgRating;
 
     }
-
-
 
 }

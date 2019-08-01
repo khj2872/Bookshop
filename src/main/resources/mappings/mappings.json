@@ -1,0 +1,59 @@
+{
+  "_doc" : {
+    "properties": {
+      "id": {
+        "type": "integer"
+      },
+      "name": {
+        "type": "keyword",
+        "boost": 30
+      },
+      "namengram": {
+        "type": "text",
+        "analyzer": "ngram_analyzer",
+        "search_analyzer": "ngram_analyzer",
+        "boost": 3
+      },
+      "namengramedge": {
+        "type": "text",
+        "analyzer": "edge_ngram_analyzer",
+        "search_analyzer": "ngram_analyzer",
+        "boost": 2
+      },
+      "namengramedgeback": {
+        "type": "text",
+        "analyzer": "edge_ngram_analyzer_back",
+        "search_analyzer": "ngram_analyzer",
+        "boost": 1
+      },
+      "category": {
+        "type": "keyword"
+      },
+      "detail": {
+        "type": "text",
+        "analyzer": "korean_analyzer"
+      },
+      "image": {
+        "type": "keyword"
+      },
+      "price": {
+        "type": "long"
+      },
+      "publicationdate": {
+        "type": "keyword"
+      },
+      "regdate": {
+        "type": "date"
+      },
+      "stock": {
+        "type": "long"
+      },
+      "writer": {
+        "type": "keyword"
+      },
+      "avgrating": {
+        "type": "double"
+      }
+    }
+  }
+}

@@ -4,28 +4,29 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.*;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Setter
 @Getter
 @ToString
-@Document(indexName = "item", type = "_doc")
-public class EsItem {
+@Document(indexName = "please", type = "_doc")
+@Setting(settingPath = "/settings/settings.json")
+@Mapping(mappingPath = "/mappings/mappings.json")
+public class EsItem implements Serializable {
 
     @Id
-    private Integer item_id;
+    private Integer id;
 
     private String name;
 
     private String writer;
 
-    private String ISBN;
+    private String publicationdate;
 
-    private String publicationDate;
-
-    private Date regDate;
+    private Date regdate;
 
     private String detail;
 
@@ -36,5 +37,7 @@ public class EsItem {
     private String image;
 
     private String category;
+
+    private double avgrating;
 
 }

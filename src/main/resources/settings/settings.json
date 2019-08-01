@@ -1,0 +1,120 @@
+{
+  "index" : {
+    "number_of_shards" : 5,
+    "number_of_replicas" : 1
+  },
+  "analysis": {
+    "analyzer": {
+      "ngram_analyzer" : {
+        "type" : "custom",
+        "tokenizer" : "ngram_tokenizer",
+        "filter" : [
+          "lowercase",
+          "trim"
+        ]
+      },
+      "edge_ngram_analyzer" : {
+        "type" : "custom",
+        "tokenizer" : "edge_ngram_tokenizer",
+        "filter" : [
+          "lowercase",
+          "trim",
+          "edge_ngram_filter_front"
+        ]
+      },
+      "edge_ngram_analyzer_back" : {
+        "type" : "custom",
+        "tokenizer" : "edge_ngram_tokenizer",
+        "filter" : [
+          "lowercase",
+          "trim",
+          "edge_ngram_filter_back"
+        ]
+      },
+      "korean_analyzer": {
+        "filter": [
+          "pos_filter_speech",
+          "lowercase"
+        ],
+        "tokenizer": "nori_user_dict_tokenizer"
+      }
+    },
+    "tokenizer" : {
+      "ngram_tokenizer" : {
+        "type" : "nGram",
+        "min_gram" : "1",
+        "max_gram" : "50",
+        "token_chars" : [
+          "letter",
+          "digit",
+          "punctuation",
+          "symbol"
+        ]
+      },
+      "edge_ngram_tokenizer" : {
+        "type" : "edgeNGram",
+        "min_gram" : "1",
+        "max_gram" : "50",
+        "token_chars" : [
+          "letter",
+          "digit",
+          "punctuation",
+          "symbol"
+        ]
+      },
+      "nori_user_dict_tokenizer": {
+        "type": "nori_tokenizer",
+        "decompound_mode": "mixed"
+      }
+    },
+    "filter": {
+      "edge_ngram_filter_front" : {
+        "type" : "edgeNGram",
+        "min_gram" : "1",
+        "max_gram" : "50",
+        "side" : "front"
+      },
+      "edge_ngram_filter_back" : {
+        "type" : "edgeNGram",
+        "min_gram" : "1",
+        "max_gram" : "50",
+        "side" : "back"
+      },
+      "pos_filter_speech": {
+        "type": "nori_part_of_speech",
+        "stoptags": [
+          "E",
+          "IC",
+          "J",
+          "MAG",
+          "MAJ",
+          "MM",
+          "NA",
+          "NR",
+          "SC",
+          "SE",
+          "SF",
+          "SH",
+          "SN",
+          "SP",
+          "SSC",
+          "SSO",
+          "SY",
+          "UNA",
+          "UNKNOWN",
+          "VA",
+          "VCN",
+          "VCP",
+          "VSV",
+          "VV",
+          "VX",
+          "XPN",
+          "XR",
+          "XSA",
+          "XSN",
+          "XSV"
+        ]
+      }
+    }
+  }
+}

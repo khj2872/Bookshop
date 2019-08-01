@@ -7,6 +7,6 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 
 public interface EsItemRepository extends ElasticsearchRepository<EsItem, Integer> {
 
-    Page<EsItem> findByCategory(String category, Pageable pageable);
+//    Page<EsItem> findByCategory(String category, Pageable pageable);
 
 }

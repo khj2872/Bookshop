@@ -2,18 +2,14 @@ package com.kobobook.www.kobobook.api;
 
 import com.kobobook.www.kobobook.domain.Cart;
 import com.kobobook.www.kobobook.dto.CartDTO;
-import com.kobobook.www.kobobook.repository.MemberRepository;
 import com.kobobook.www.kobobook.service.CartService;
 import com.kobobook.www.kobobook.service.JwtService;
 import com.kobobook.www.kobobook.service.MemberService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +31,7 @@ public class CartApiController {
     * */
     @PostMapping("")
     public ResponseEntity<Integer> createCart(@RequestBody Map<String, Object> param) {
-        Integer memberId = (Integer)jwtService.get("member").get("id");
+        Integer memberId = (Integer) jwtService.getString("userId");
         Integer itemId = (Integer) param.get("itemId");
         Integer count = (Integer) param.get("count");
         return new ResponseEntity<>(cartService.createCart(memberId, itemId, count), HttpStatus.OK);
@@ -63,7 +59,7 @@ public class CartApiController {
     * */
     @GetMapping("")
     public ResponseEntity<List<CartDTO>> readCartList() {
-        List<CartDTO> cartDTOList = cartService.readCartList((Integer) jwtService.get("member").get("id"));
+        List<CartDTO> cartDTOList = cartService.readCartList((Integer) jwtService.getString("userId"));
         System.out.println("444444444");
         return new ResponseEntity<>(cartDTOList, HttpStatus.OK);
     }
@@ -74,7 +70,7 @@ public class CartApiController {
     @GetMapping("/list")
     public ResponseEntity<Map<String, Object>> readOrderList(@RequestParam("id") Integer[] cartIdList) {
         Map<String, Object> orderInfo = new HashMap<>();
-        orderInfo.put("member", memberService.readMember((Integer) jwtService.get("member").get("id")));
+        orderInfo.put("member", memberService.readMember((Integer) jwtService.getString("userId")));
         orderInfo.put("orderList", cartService.readOrderList(cartIdList));
         return new ResponseEntity<>(orderInfo, HttpStatus.OK);
     }

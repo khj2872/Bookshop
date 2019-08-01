@@ -5,11 +5,13 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.elasticsearch.annotations.Document;
 
+import java.io.Serializable;
+
 @Setter
 @Getter
 @ToString
-@Document(indexName = "item", type = "_doc")
-public class Autocomplete {
+@Document(indexName = "please", type = "_doc")
+public class Autocomplete implements Serializable {
 
     private String name;
 

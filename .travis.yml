@@ -1,0 +1,23 @@
+language: java
+jdk: oraclejdk8
+
+before_install:
+  - chmod +x mvnw
+
+branches:
+  only:
+    - master
+
+# Travis CI 서버의 Home
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+    - '$HOME/.maven'
+
+#script: "./mvnw clean package"
+
+# CI 실행 완료시 메일로 알람
+notifications:
+  email:
+    recipients:
+      - hykang2872@gmail.com
