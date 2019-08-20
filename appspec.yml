@@ -1,7 +1,7 @@
 version: 0.0
 os: linux
 files:
-  - source:  /api/
+  - source:  /
     destination: /home/ec2-user/app/nonstop/kobobook-api/
 
 hooks:

@@ -19,18 +19,18 @@ script: "./mvnw clean package -Dmaven.test.skip=true"
 
 before_deploy:
   - zip -r kobobook-webservice-api *
-  - mkdir -p deploy/api
-  - mv kobobook-webservice-api.zip deploy/api/kobobook-webservice-api.zip
+  - mkdir -p deploy
+  - mv kobobook-webservice-api.zip deploy/kobobook-webservice-api.zip
 
 deploy:
   - provider: s3
     access_key_id: $AWS_ACCESS_KEY
     secret_access_key: $AWS_SECRET_KEY
-    bucket: kobobook-deploy
+    bucket: kobobook-deploy/api
     region: ap-northeast-2
     skip_cleanup: true
     acl: public_read
-    local_dir: deploy/api
+    local_dir: deploy
     wait-until-deployed: true
     on:
       repo: khj2872/Bookshop
@@ -39,7 +39,7 @@ deploy:
   - provider: codedeploy
     access_key_id: $AWS_ACCESS_KEY
     secret_access_key: $AWS_SECRET_KEY
-    bucket: kobobook-deploy
+    bucket: kobobook-deploy/api
     key: kobobook-webservice-api.zip # S3 버킷에 저장된 kobobook-webservice-api.zip 파일을 EC2로 배포
     bundle_type: zip
     application: kobobook-webservice-api # 웹 콘솔에서 등록한 CodeDeploy 어플리케이션
