@@ -20,7 +20,7 @@ script: "./mvnw clean package -Dmaven.test.skip=true"
 before_deploy:
   - zip -r kobobook-webservice-api *
   - mkdir -p deploy/api
-  - mv kobobook-webservice.zip deploy/api/kobobook-webservice-api.zip
+  - mv kobobook-webservice-api.zip deploy/api/kobobook-webservice-api.zip
 
 deploy:
   - provider: s3
@@ -42,7 +42,7 @@ deploy:
     bucket: kobobook-deploy
     key: kobobook-webservice-api.zip # S3 버킷에 저장된 kobobook-webservice-api.zip 파일을 EC2로 배포
     bundle_type: zip
-    application: kobobook-webservice # 웹 콘솔에서 등록한 CodeDeploy 어플리케이션
+    application: kobobook-webservice-api # 웹 콘솔에서 등록한 CodeDeploy 어플리케이션
     deployment_group: kobobook-webservice-group # 웹 콘솔에서 등록한 CodeDeploy 배포 그룹
     region: ap-northeast-2
     wait-until-deployed: true
