@@ -15,6 +15,11 @@ spring:
       max-file-size: 5MB
       max-request-size: 5MB
 
+management:
+  health:
+    elasticsearch:
+      enabled: false
+
 ---
 spring:
   h2:

@@ -1,8 +1,6 @@
 package com.kobobook.www.kobobook.service;
 
-import com.kobobook.www.kobobook.domain.Category;
 import com.kobobook.www.kobobook.domain.Item;
-import com.kobobook.www.kobobook.domain.Review;
 import com.kobobook.www.kobobook.dto.ItemDTO;
 import com.kobobook.www.kobobook.elasticsearch.Autocomplete;
 import com.kobobook.www.kobobook.elasticsearch.EsItem;
@@ -16,12 +14,10 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
@@ -29,11 +25,7 @@ import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.elasticsearch.index.query.QueryBuilders.prefixQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
@@ -44,13 +36,7 @@ public class ItemService {
 
     private ItemRepository itemRepository;
 
-    private CategoryRepository categoryRepository;
-
-    private ReviewRepository reviewRepository;
-
     private ElasticsearchTemplate elasticsearchTemplate;
-
-    private EsItemRepository esItemRepository;
 
     private ModelMapper modelMapper;
     /*
