@@ -4,28 +4,24 @@
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
     <!-- 로그 저장 할 위치 -->
-<!--    <property name="LOG_DIR" value="E:/logs/" />-->
+<!--    <property name="LOG_DIR" value="/home/ec2-user/app/tomcat-log/kobobook-admin/" />-->
+    <property name="LOG_DIR" value="E:/workspace/IDEA_workspace/log/kobobook-admin/" />
 
-<!--    <appender name="dailyRollingFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
-<!--        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">-->
-<!--            <layout class="com.kobobook.www.kobobook.util.logback.CustomLayout">-->
-<!--                <jsonFormatter class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">-->
-<!--                    <prettyPrint>true</prettyPrint>-->
-<!--                </jsonFormatter>-->
-<!--            </layout>-->
-<!--        </encoder>-->
-<!--        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
-<!--            <fileNamePattern>${LOG_DIR}%d{yyyy-MM-dd}.json</fileNamePattern>-->
-<!--            <maxHistory>30</maxHistory> &lt;!&ndash; 30일 전 까지의 로그만 저장 &ndash;&gt;-->
-<!--        </rollingPolicy>-->
-<!--        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">-->
-<!--            <level>INFO</level>-->
-<!--        </filter>-->
-<!--    </appender>-->
+    <appender name="dailyRollingFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory> <!-- 30일 전 까지의 로그만 저장 -->
+        </rollingPolicy>
+        <encoder>
+            <pattern>
+                %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
 
     <!-- Log Stash 사용시 사용할 TCP 통신 정보 -->
     <appender name="stash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-        <destination>127.0.0.1:4560</destination>
+        <destination>52.79.132.108:4560</destination>
         <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
             <providers>
                 <timestamp/>
@@ -45,8 +41,11 @@
     </appender>
 
     <logger name="com.kobobook.www.kobobook.api.ItemApiController" level="INFO">
-<!--        <appender-ref ref="dailyRollingFileAppender"/>-->
         <appender-ref ref="stash"/>
     </logger>
+
+    <root level="INFO">
+        <appender-ref ref="dailyRollingFileAppender" />
+    </root>
 
 </configuration>

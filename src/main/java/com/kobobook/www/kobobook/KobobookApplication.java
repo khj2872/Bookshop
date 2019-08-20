@@ -1,7 +1,7 @@
 package com.kobobook.www.kobobook;
 
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
@@ -15,8 +15,15 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication
 public class KobobookApplication {
 
+    private static final String APPLICATION_LOCATIONS = "spring.config.location="
+            + "classpath:application.yml,"
+            + "file:///E:/workspace/IDEA_workspace/config/kobobook-admin/real-application.yml,"
+            + "file:///home/ec2-user/app/config/kobobook-api/real-application.yml";
+
     public static void main(String[] args) {
-        SpringApplication.run(KobobookApplication.class, args);
+        new SpringApplicationBuilder(KobobookApplication.class)
+                .properties(APPLICATION_LOCATIONS)
+                .run(args);
     }
 
 }

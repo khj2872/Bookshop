@@ -29,6 +29,7 @@ import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -52,15 +53,6 @@ public class ItemService {
     private EsItemRepository esItemRepository;
 
     private ModelMapper modelMapper;
-
-    @Transactional
-    public void create(Item item) {
-        Optional<Category> category = categoryRepository.findById(item.getCategory().getId());
-        item.setCategory(category.orElse(null));
-        item.setRegDate(new Date());
-        itemRepository.save(item);
-    }
-
     /*
      * 자동완성 아이템 목록
      * */

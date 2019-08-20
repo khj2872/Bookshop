@@ -23,8 +23,6 @@ public class OrderService {
 
     private CartRepository cartRepository;
 
-    private DeliveryRepository deliveryRepository;
-
     private OrderRepositoryImpl orderRepositoryImpl;
 
     private ModelMapper modelMapper;

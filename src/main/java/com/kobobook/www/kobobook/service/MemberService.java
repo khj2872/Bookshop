@@ -10,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Service
@@ -26,7 +27,7 @@ public class MemberService {
     @Transactional
     public Member oauthSignUp(Member member) {
         member.setRole(Role.ROLE_USER);
-        member.setRegDate(new Date());
+        member.setRegDate(LocalDateTime.now());
         Member loginMember = memberRepository.findByOauthId(member.getOauthId());
         if(loginMember == null) {
             return memberRepository.save(member);
@@ -60,7 +61,7 @@ public class MemberService {
         } else {
             member.setPassword(member.getPassword());
             member.setRole(Role.ROLE_USER);
-            member.setRegDate(new Date());
+            member.setRegDate(LocalDateTime.now());
             memberRepository.save(member);
         }
     }

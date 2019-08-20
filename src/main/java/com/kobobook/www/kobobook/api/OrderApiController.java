@@ -94,7 +94,7 @@ public class OrderApiController {
     /*
     * 배송 완료
     * */
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/complete")
     public ResponseEntity<Void> completeOrder(@PathVariable("id") Integer orderId) {
         orderService.completeOrder(orderId);
         return new ResponseEntity<>(HttpStatus.OK);

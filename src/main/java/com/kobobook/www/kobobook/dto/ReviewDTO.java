@@ -2,6 +2,7 @@ package com.kobobook.www.kobobook.dto;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -16,7 +17,7 @@ public class ReviewDTO {
 
     private double rating;
 
-    private Date regDate;
+    private LocalDateTime regDate;
 
     private String content;
 

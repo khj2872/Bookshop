@@ -4,6 +4,7 @@ import com.kobobook.www.kobobook.domain.Address;
 import com.kobobook.www.kobobook.domain.Role;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -25,7 +26,7 @@ public class MemberDTO {
 
     private Address address;
 
-    private Date regDate;
+    private LocalDateTime regDate;
 
     private long point;
 

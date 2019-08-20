@@ -3,6 +3,7 @@ package com.kobobook.www.kobobook.dto;
 import lombok.*;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -28,9 +29,9 @@ public class ItemDTO {
 
         private String publicationDate;
 
-        private Date regDate;
+        private LocalDateTime regDate;
 
-        private Date updateDate;
+        private LocalDateTime updateDate;
 
         private String detail;
 
@@ -81,9 +82,9 @@ public class ItemDTO {
 
         private String publicationDate;
 
-        private Date regDate;
+        private LocalDateTime regDate;
 
-        private Date updateDate;
+        private LocalDateTime updateDate;
 
         private String detail;
 

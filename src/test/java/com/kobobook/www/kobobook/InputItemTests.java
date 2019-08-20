@@ -17,6 +17,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -36,8 +37,7 @@ public class InputItemTests {
 
         JSONParser jsonParser = new JSONParser();
         JSONObject jsonObject;
-
-
+        
         List<Item> itemList = new ArrayList<>();
         jsonObject = (JSONObject) jsonParser.parse(data);
         JSONArray items = (JSONArray) jsonObject.get("items");
@@ -63,8 +63,6 @@ public class InputItemTests {
             System.out.println("publicationDate : " + publicationDate);
             System.out.println("image : " + image);
 
-
-
             item.setName(title.replace("<b>", "").replace("</b>", ""));
             item.setISBN(isbn);
             item.setWriter(author);
@@ -74,7 +72,7 @@ public class InputItemTests {
             item.setImage(image);
             item.setStock(100l);
             item.setSavingRate(5);
-            item.setRegDate(new Date());
+            item.setRegDate(LocalDateTime.now());
             item.setCategory(categoryRepository.findById(7).get());
 
             itemList.add(item);
@@ -110,8 +108,7 @@ public class InputItemTests {
             br.close();
             System.out.println(response.toString());
             return response.toString();
-
-
+            
         } catch (Exception e) {
             System.out.println(e);
             return null;

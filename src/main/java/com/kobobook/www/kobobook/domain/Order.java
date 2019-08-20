@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
@@ -28,8 +29,7 @@ public class Order {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Delivery delivery;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date orderDate;
+    private LocalDateTime orderDate;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
@@ -51,7 +51,7 @@ public class Order {
         order.setUsingPoint(usingPoint);
         order.setSavingPoint(savingPoint);
         order.setStatus(OrderStatus.ORDER);
-        order.setOrderDate(new Date());
+        order.setOrderDate(LocalDateTime.now());
         return order;
     }
 

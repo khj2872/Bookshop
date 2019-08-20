@@ -26,7 +26,7 @@ public class JwtInterceptor implements HandlerInterceptor {
         try {
             if(token != null) {
                 jwtService.jwtValidate(token);
-                log.info("인증 성공");
+                log.debug("인증 성공");
                 return true;
             } else {
                 log.debug("nullToken");

@@ -88,8 +88,8 @@ public class ItemApiController {
     /*
     * 아이템 상세정보
     * */
-    @GetMapping("/{itemId}")
-    public ResponseEntity<Map<String, Object>> readItemDetail(@PathVariable("itemId") Integer itemId, HttpServletRequest request) throws Exception {
+    @GetMapping("/{id}")
+    public ResponseEntity<Map<String, Object>> readItemDetail(@PathVariable("id") Integer itemId, HttpServletRequest request) throws Exception {
         final String token = request.getHeader("Authorization");
         if(token != null) {
             itemClickLog(itemId, token);

@@ -20,7 +20,7 @@ public class CustomLayout extends JsonLayout {
         map.remove("message");
 
         StringTokenizer st = new StringTokenizer(iLoggingEvent.getMessage(), ",");
-        Map<String, String> json = new TreeMap();
+        Map<String, String> json = new TreeMap<>();
         while (st.hasMoreTokens()) {
             String elmStr = st.nextToken();
             StringTokenizer elmSt = new StringTokenizer(elmStr, ":");

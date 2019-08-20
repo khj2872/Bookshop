@@ -15,6 +15,38 @@ spring:
       max-file-size: 5MB
       max-request-size: 5MB
 
+---
+spring:
+  h2:
+    console:
+      enabled: true
+  profiles: local
+  datasource:
+#    platform: h2
+#    username: sa
+#    password:
+#    driver-class-name: org.h2.Driver
+  #mariadb
+    url: jdbc:mariadb://localhost:3306/shop
+    username: user1
+    password: 1234
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+#    database-platform: H2
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  main:
+    allow-bean-definition-overriding: true
+
+elasticsearch:
+  host: 127.0.0.1
+  port: 9300
+  clusterName: javacafe-cluster
+
 logging:
   level:
     org:
@@ -23,39 +55,24 @@ logging:
           descriptor:
             sql: trace
 
----
-spring:
-  h2:
-    console:
-      enabled: true
-  profiles: local
-  datasource:
-    platform: h2
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
-  #mariadb
-#    url: jdbc:mariadb://localhost:3306/shop
-#    username: user1
-#    password: 1234
-#    driver-class-name: org.mariadb.jdbc.Driver
-  jpa:
-    database-platform: H2
-    hibernate:
-      ddl-auto: create-drop
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-  main:
-    allow-bean-definition-overriding: true
+server:
+  tomcat:
+    basedir: E:/workspace/IDEA_workspace/log/kobobook-admin/
 
+---
+spring.profiles: set1
+spring.profiles.include: real-db
 
 server:
-  ssl:
-    enabled: true
-    key-store: keystore.p12
-    key-store-password: gurwls12
-    key-store-type: PKCS12
-    key-alias: bns-ssl
-  port: 8442
+  port: 8081
+  tomcat:
+    basedir: /home/ec2-user/app/log/kobobook-api
+
+---
+spring.profiles: set2
+spring.profiles.include: real-db
+
+server:
+  port: 8082
+  tomcat:
+    basedir: /home/ec2-user/app/log/kobobook-api
