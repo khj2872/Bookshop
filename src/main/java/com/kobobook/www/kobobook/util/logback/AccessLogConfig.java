@@ -13,7 +13,7 @@ public class AccessLogConfig implements WebServerFactoryCustomizer {
         final TomcatServletWebServerFactory containerFactory = (TomcatServletWebServerFactory) factory;
 
         final AccessLogValve accessLogValve = new AccessLogValve();
-        accessLogValve.setPattern("%{yyyy-MM-dd HH:mm:ss}t\t%s\t%r\t%{User-Agent}i\t%{Referer}i\t%a\t%b");
+        accessLogValve.setPattern("%h %t \"%r\" %s %b %D \"%{Referer}i\" \"%{User-Agent}i\"");
         accessLogValve.setDirectory(".");
         accessLogValve.setSuffix(".log");
         accessLogValve.setCondition("ignoreLogging");

@@ -1,6 +1,6 @@
 package com.kobobook.www.kobobook.config;
 
-import com.kobobook.www.kobobook.filter.AccessLogingFilter;
+import com.kobobook.www.kobobook.filter.AccessLoggingFilter;
 import com.kobobook.www.kobobook.interceptor.JwtInterceptor;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -21,7 +21,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     private JwtInterceptor jwtInterceptor;
 
-    private AccessLogingFilter accessLogingFilter;
+    private AccessLoggingFilter accessLoggingFilter;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -31,9 +31,9 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public FilterRegistrationBean<AccessLogingFilter> filterRegistrationBean() {
-        FilterRegistrationBean<AccessLogingFilter> filterRegistrationBean = new FilterRegistrationBean<>();
-        filterRegistrationBean.setFilter(accessLogingFilter);
+    public FilterRegistrationBean<AccessLoggingFilter> filterRegistrationBean() {
+        FilterRegistrationBean<AccessLoggingFilter> filterRegistrationBean = new FilterRegistrationBean<>();
+        filterRegistrationBean.setFilter(accessLoggingFilter);
         filterRegistrationBean.addUrlPatterns("/*");
         return filterRegistrationBean;
     }

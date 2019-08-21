@@ -9,7 +9,7 @@ import java.io.IOException;
 
 @Component
 @Slf4j
-public class AccessLogingFilter implements Filter {
+public class AccessLoggingFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
