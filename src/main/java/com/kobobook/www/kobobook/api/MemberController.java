@@ -5,6 +5,7 @@ import com.kobobook.www.kobobook.service.JwtService;
 import com.kobobook.www.kobobook.service.MemberService;
 import com.kobobook.www.kobobook.util.OAuthLoginUtils;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/api")
 @AllArgsConstructor
+@Slf4j
 public class MemberController {
 
     private MemberService memberService;
@@ -32,6 +34,7 @@ public class MemberController {
             e.printStackTrace();
         } finally {
 //            return "redirect:http://localhost:3000/agreement?token=" + access_token; //dev
+            log.error("access_token : {}", access_token);
             return "redirect:http://kobobook-client.s3-website.ap-northeast-2.amazonaws.com/agreement?token=" + access_token; //prod
         }
 
