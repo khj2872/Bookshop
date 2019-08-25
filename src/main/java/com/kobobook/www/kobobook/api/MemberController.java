@@ -31,7 +31,7 @@ public class MemberController {
             e.printStackTrace();
         } finally {
 //            return "redirect:http://localhost:3000/agreement?token=" + access_token; //dev
-            return "redirect:http://kobobook-client.s3-website.ap-northeast-2.amazonaws.com//agreement?token=" + access_token; //prod
+            return "redirect:http://kobobook-client.s3-website.ap-northeast-2.amazonaws.com/agreement?token=" + access_token; //prod
         }
 
     }
