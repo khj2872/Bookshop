@@ -5,6 +5,7 @@ import com.kobobook.www.kobobook.service.JwtService;
 import com.kobobook.www.kobobook.service.MemberService;
 import com.kobobook.www.kobobook.util.OAuthLoginUtils;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -29,7 +30,8 @@ public class MemberController {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            return "redirect:http://localhost:3000/agreement?token=" + access_token;
+//            return "redirect:http://localhost:3000/agreement?token=" + access_token; //dev
+            return "redirect:http://kobobook-client.s3-website.ap-northeast-2.amazonaws.com//agreement?token=" + access_token; //prod
         }
 
     }
@@ -44,20 +46,6 @@ public class MemberController {
         String token = jwtService.createMember(loginMember.getId(), loginMember.getRole().toString());
 
         return new ResponseEntity<>(token, HttpStatus.OK);
-    }
-
-    @GetMapping("/login/kakao")
-    public String kakaoLogin(@RequestParam("code") String code) {
-        String access_token = null;
-
-        try {
-            access_token = OAuthLoginUtils.Kakao.kakaoLogin(code);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            return "redirect:http://localhost:3000/agreement?token=" + access_token;
-        }
-
     }
 
 }

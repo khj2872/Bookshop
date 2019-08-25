@@ -1,17 +1,16 @@
 package com.kobobook.www.kobobook.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.*;
 
 @Entity
 @Getter
 @Setter
+@ToString
 public class Member {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,10 +39,6 @@ public class Member {
 
     private long point;
 
-//    @JsonIgnore
-//    @OneToMany(mappedBy = "member")
-//    private List<Order> orders = new ArrayList<>();
-
     public boolean matchPassword(String password) {
         return this.getPassword().equals(password);
     }
@@ -52,19 +47,4 @@ public class Member {
         return this.role.equals(Role.ROLE_ADMIN);
     }
 
-    @Override
-    public String toString() {
-        return "Member{" +
-                "id=" + id +
-                ", userEmail='" + userEmail + '\'' +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", oauthId='" + oauthId + '\'' +
-                ", role='" + role + '\'' +
-                ", phone='" + phone + '\'' +
-                ", address=" + address +
-                ", regDate=" + regDate +
-                ", point=" + point +
-                '}';
-    }
 }

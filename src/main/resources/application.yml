@@ -20,6 +20,11 @@ management:
     elasticsearch:
       enabled: false
 
+naver:
+  clientId: aXJAQ9m_D_59dFXwH6Op
+  clientSecret: pYBBRnj1UQ
+  accessTokenUri: https://nid.naver.com/oauth2.0/token?grant_type=authorization_code
+  userInfoUri: https://openapi.naver.com/v1/nid/me
 ---
 spring:
   h2:
@@ -51,6 +56,8 @@ elasticsearch:
   host: 127.0.0.1
   port: 9300
   clusterName: javacafe-cluster
+
+
 
 logging:
   level:
