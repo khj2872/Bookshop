@@ -23,19 +23,21 @@ public class MemberController {
 
     private JwtService jwtService;
 
+    private OAuthLoginUtils oAuthLoginUtils;
+
     @GetMapping("/login/naver")
     public String naverLogin(@RequestParam(value = "code") String code,
                              @RequestParam(value = "state") String state) {
         String access_token = null;
 
         try {
-            access_token = OAuthLoginUtils.Naver.naverLogin(code, state);
+            access_token = oAuthLoginUtils.naverLogin(code, state);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-//            return "redirect:http://localhost:3000/agreement?token=" + access_token; //dev
             log.error("access_token : {}", access_token);
-            return "redirect:http://kobobook-client.s3-website.ap-northeast-2.amazonaws.com/agreement?token=" + access_token; //prod
+            return "redirect:http://localhost:3000/agreement?token=" + access_token; //dev
+//            return "redirect:http://kobobook-client.s3-website.ap-northeast-2.amazonaws.com/agreement?token=" + access_token; //prod
         }
 
     }

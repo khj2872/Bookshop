@@ -89,11 +89,7 @@ public class ItemApiController {
     * 아이템 상세정보
     * */
     @GetMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> readItemDetail(@PathVariable("id") Integer itemId, HttpServletRequest request) throws Exception {
-        final String token = request.getHeader("Authorization");
-        if(token != null) {
-            itemClickLog(itemId, token);
-        }
+    public ResponseEntity<Map<String, Object>> readItemDetail(@PathVariable("id") Integer itemId) {
 
         ItemDTO.ItemWithCategory item = itemService.readItemDetail(itemId);
         List<ReviewDTO> reviews = reviewService.readReviewList(item.getId());
@@ -103,16 +99,5 @@ public class ItemApiController {
         returnMap.put("reviews" ,reviews);
 
         return new ResponseEntity<>(returnMap, HttpStatus.OK);
-    }
-
-    private void itemClickLog(Integer itemId, String token) throws JsonProcessingException {
-        jwtService.jwtValidate(token);
-        Integer memberId = (Integer) jwtService.getString("userId");
-
-        // memberId, itemId 로그 기록
-        Map<String, Object> resultMap = new TreeMap<>();
-        resultMap.put("memberId", memberId);
-        resultMap.put("itemId", itemId);
-        log.info(new ObjectMapper().writeValueAsString(resultMap));
     }
 }
