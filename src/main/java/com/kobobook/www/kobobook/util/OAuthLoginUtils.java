@@ -8,6 +8,7 @@ import com.google.gson.JsonParser;
 import com.kobobook.www.kobobook.domain.Member;
 import com.kobobook.www.kobobook.service.JwtService;
 import com.kobobook.www.kobobook.service.MemberService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +19,7 @@ import java.net.URL;
 import java.util.Map;
 
 @Component
+@Slf4j
 public class OAuthLoginUtils {
 
     private static ObjectMapper mapper;
@@ -63,8 +65,8 @@ public class OAuthLoginUtils {
             if (responseCode == 200) { // 정상 호출
                 br = new BufferedReader(new InputStreamReader(con.getInputStream()));
             } else {  // 에러 발생
-//                br = new BufferedReader(new InputStreamReader(con.getErrorStream()));
                 throw new RuntimeException("getAccessToken fail!!");
+
             }
             String inputLine;
             StringBuffer accessTokenRes = new StringBuffer();
@@ -98,7 +100,6 @@ public class OAuthLoginUtils {
             if (responseCode == 200) { // 정상 호출
                 br = new BufferedReader(new InputStreamReader(con.getInputStream()));
             } else {  // 에러 발생
-//                br = new BufferedReader(new InputStreamReader(con.getErrorStream()));
                 throw new RuntimeException("getUserInfo fail!!");
             }
             String inputLine;
