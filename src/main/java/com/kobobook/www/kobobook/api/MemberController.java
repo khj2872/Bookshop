@@ -4,7 +4,6 @@ import com.kobobook.www.kobobook.domain.Member;
 import com.kobobook.www.kobobook.service.JwtService;
 import com.kobobook.www.kobobook.service.MemberService;
 import com.kobobook.www.kobobook.util.OAuthLoginUtils;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -12,10 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-
 @Controller
 @RequestMapping("/api")
-@AllArgsConstructor
 @Slf4j
 public class MemberController {
 
@@ -24,6 +21,15 @@ public class MemberController {
     private JwtService jwtService;
 
     private OAuthLoginUtils oAuthLoginUtils;
+
+    public MemberController(MemberService memberService, JwtService jwtService, OAuthLoginUtils oAuthLoginUtils) {
+        this.memberService = memberService;
+        this.jwtService = jwtService;
+        this.oAuthLoginUtils = oAuthLoginUtils;
+    }
+
+    @Value("${login.redirectUri")
+    private String redirectUri;
 
     @GetMapping("/login/naver")
     public String naverLogin(@RequestParam(value = "code") String code,
@@ -35,9 +41,7 @@ public class MemberController {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            log.error("access_token : {}", access_token);
-            return "redirect:http://localhost:3000/agreement?token=" + access_token; //dev
-//            return "redirect:http://kobobook-client.s3-website.ap-northeast-2.amazonaws.com/agreement?token=" + access_token; //prod
+            return "redirect:" + redirectUri + access_token;
         }
 
     }

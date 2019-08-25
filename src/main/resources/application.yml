@@ -57,8 +57,6 @@ elasticsearch:
   port: 9300
   clusterName: javacafe-cluster
 
-
-
 logging:
   level:
     org:
@@ -66,6 +64,9 @@ logging:
         type:
           descriptor:
             sql: trace
+
+login:
+  redirectUri: http://localhost:3000/agreement?token=
 
 server:
   tomcat:
@@ -80,6 +81,9 @@ server:
   tomcat:
     basedir: /home/ec2-user/app/log/kobobook-api/
 
+login:
+  redirectUri: http://kobobook-client.s3-website.ap-northeast-2.amazonaws.com/agreement?token=
+
 ---
 spring.profiles: set2
 spring.profiles.include: real-db
@@ -88,3 +92,6 @@ server:
   port: 8082
   tomcat:
     basedir: /home/ec2-user/app/log/kobobook-api
+
+login:
+  redirectUri: http://kobobook-client.s3-website.ap-northeast-2.amazonaws.com/agreement?token=
