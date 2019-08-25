@@ -65,8 +65,8 @@ public class OAuthLoginUtils {
             if (responseCode == 200) { // 정상 호출
                 br = new BufferedReader(new InputStreamReader(con.getInputStream()));
             } else {  // 에러 발생
+                log.error("getAccessToken fail!");
                 throw new RuntimeException("getAccessToken fail!!");
-
             }
             String inputLine;
             StringBuffer accessTokenRes = new StringBuffer();
@@ -100,6 +100,7 @@ public class OAuthLoginUtils {
             if (responseCode == 200) { // 정상 호출
                 br = new BufferedReader(new InputStreamReader(con.getInputStream()));
             } else {  // 에러 발생
+                log.error("getUserInfo fail!!");
                 throw new RuntimeException("getUserInfo fail!!");
             }
             String inputLine;
