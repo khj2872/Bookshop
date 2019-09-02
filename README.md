@@ -1,4 +1,4 @@
-# Toy Project: Spring Boot와 Vue.js를 이용한 도서 쇼핑몰
+# Toy Project: Spring Boot와 Vue.js를 이용한 도서 쇼핑몰 [![Build Status](https://travis-ci.org/khj2872/Bookshop.svg?branch=master)](https://travis-ci.org/khj2872/Bookshop)
 처음 다뤄보는 기술 스택(Vue.js, JPA, Elastic Stack, AWS ···)들을 사용하여 만든 관리자-사용자 기반의 도서 쇼핑몰
 
 [클라이언트](https://github.com/khj2872/Bookshop_Front)
@@ -88,3 +88,9 @@ View를 작성하는데 이용되는 자바스크립트 기술의 이해를 위�
 - Thymeleaf(Spring-boot-starter)
 - Bootstrap
 - JQuery
+
+### 배포 환경
+#### AWS 배포 전체 구조
+![전체 배포 구성도](./screenshot/aws-diagram.png)
+#### 무중단 배포 구조
+![무중단 배포 자동화 구성도](./screenshot/nonstop-deploy.png)
