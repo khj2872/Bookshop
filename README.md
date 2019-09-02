@@ -89,8 +89,8 @@ View를 작성하는데 이용되는 자바스크립트 기술의 이해를 위�
 - Bootstrap
 - JQuery
 
-### 배포 환경
-#### AWS 배포 전체 구조
+## 배포 환경
+### AWS 배포 전체 구조
 ![전체 배포 구성도](./screenshot/aws-diagram.png)
-#### 무중단 배포 구조
+### 무중단 배포 구조
 ![무중단 배포 자동화 구성도](./screenshot/nonstop-deploy.png)
