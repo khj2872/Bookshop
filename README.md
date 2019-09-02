@@ -92,5 +92,19 @@ View를 작성하는데 이용되는 자바스크립트 기술의 이해를 위�
 ## 배포 환경
 ### AWS 배포 전체 구조
 ![전체 배포 구성도](./screenshot/aws-diagram.png)
+
+#### Elastic Stack
+![Kibana dashboard](./screenshot/kibana-access-log-dashboard.png)
+Elastic Stack(Filebeat-Logstash-Elasticsearch-Kibana)를 이용하여 API Server의 Nginx Access-log를 분석한다.
+
 ### 무중단 배포 구조
 ![무중단 배포 자동화 구성도](./screenshot/nonstop-deploy.png)
+
+#### Travis-CI
+Git push를 하면 Travis-CI에서 Test와 Build를 시작한다. 성공 시 결과물을 AWS S3에 업로드 한다.
+
+#### AWS CodeDeploy
+S3에 업로드 된 Build 결과물을 EC2에 전달한다. 기존 소스코드를 덮어쓰고, 실패할 경우 자동으로 롤백시킨다.
+
+#### EC2
+Nginx를 리버스 프록시 서버로 사용하여 2개의 Spring Boot 인스턴스로 Blue-Green 무중단 배포를 구현한다.
