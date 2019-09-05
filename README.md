@@ -11,13 +11,14 @@ API 서버(현재 페이지)
 1. 프로젝트는 크게 API 서버, 클라이언트, 관리자 페이지로 구성한다.
 2. API 서버와 관리자 페이지는 코드가 서로 교차 사용될 확률이 높기 때문에 분리해서 구현한다.
 3. Spring Boot, Spring Data JPA·Elasticsearch 로 API 서버와 관리자 페이지를 구성한다.
-4. 클라이언트단은 Vue.js를 활용하여 제작한다.
-5. 관리자페이지는 Thymeleaf 템플릿 엔진을 이용한 SSR로 제작한다.
-6. 완성된 프로젝트를 AWS EC2에 배포한다.
-7. 6번까지의 과정이 끝나면 Travis-CI와 AWS S3, CodeDeploy를 자동 배포 시스템을 구축한다.
-8. Nginx를 이용하여 Blue-Green 무중단 배포 시스템을 구축한다.
-9. Elastic Stack을 이용해 Nginx의 Access-log를 분석한다.
-10. 여러가지 기술 스택들을 경험해보는 것이 최종 목표이다.
+4. Elasticsearch를 이용해 검색어 자동완성 및 검색 기능을 구현한다.
+5. 클라이언트단은 Vue.js를 활용하여 제작한다.
+6. 관리자페이지는 Thymeleaf 템플릿 엔진을 이용한 SSR로 제작한다.
+7. 완성된 프로젝트를 AWS EC2에 배포한다.
+8. 6번까지의 과정이 끝나면 Travis-CI와 AWS S3, CodeDeploy를 자동 배포 시스템을 구축한다.
+9. Nginx를 이용하여 Blue-Green 무중단 배포 시스템을 구축한다.
+10. Elastic Stack을 이용해 Nginx의 Access-log를 분석한다.
+11. 여러가지 기술 스택들을 경험해보는 것이 최종 목표이다.
 
 ## 주제
 관리자-사용자 기반의 기본적인 기능들이 구현된 쇼핑몰을 구현한다.
@@ -91,14 +92,14 @@ View를 작성하는데 이용되는 자바스크립트 기술의 이해를 위�
 
 ## 배포 환경
 ### AWS 배포 전체 구조
-![전체 배포 구성도](./screenshot/aws-diagram.png)
+![전체 배포 구성도](screenshot/aws-diagram.png)
 
 #### Elastic Stack
-![Kibana dashboard](./screenshot/kibana-access-log-dashboard.png)
 Elastic Stack(Filebeat-Logstash-Elasticsearch-Kibana)를 이용하여 API Server의 Nginx Access-log를 분석한다.
+![Kibana dashboard](screenshot/kibana-access-log-dashboard.png)
 
 ### 무중단 배포 구조
-![무중단 배포 자동화 구성도](./screenshot/nonstop-deploy.png)
+![무중단 배포 자동화 구성도](screenshot/nonstop-deploy.png)
 
 #### Travis-CI
 Git push를 하면 Travis-CI에서 Test와 Build를 시작한다. 성공 시 결과물을 AWS S3에 업로드 한다.
@@ -108,3 +109,32 @@ S3에 업로드 된 Build 결과물을 EC2에 전달한다. 기존 소스코드�
 
 #### EC2
 Nginx를 리버스 프록시 서버로 사용하여 2개의 Spring Boot 인스턴스로 Blue-Green 무중단 배포를 구현한다.
+
+## 주요 화면
+
+#### 로그인
+![로그인](screenshot/login.png)
+
+#### 키워드 자동완성
+![자동완성](screenshot/autocomplete-list.png)
+
+#### 검색
+![검색](screenshot/search-result.png)
+
+#### 상품 상세보기
+![상세보기](screenshot/itemDetail.png)
+
+#### 장바구니
+![장바구니](screenshot/cart-list.png)
+
+#### 주문
+![주문](screenshot/order.png)
+
+#### 주문 목록
+![주문목록](screenshot/order-list.png)
+
+#### 주문 상세보기
+![주문 상세보기](screenshot/order-detail.png)
+
+#### 전체 회원 주문 검색 및 목록
+![회원 주문 목록](screenshot/admin-readyOrderList.png)
