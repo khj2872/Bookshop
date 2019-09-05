@@ -1,35 +1,22 @@
 package com.kobobook.www.kobobook.api;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kobobook.www.kobobook.domain.Item;
-import com.kobobook.www.kobobook.domain.Review;
 import com.kobobook.www.kobobook.dto.ItemDTO;
 import com.kobobook.www.kobobook.dto.ReviewDTO;
 import com.kobobook.www.kobobook.elasticsearch.Autocomplete;
 import com.kobobook.www.kobobook.elasticsearch.EsItem;
-import com.kobobook.www.kobobook.exception.UnauthorizedException;
-import com.kobobook.www.kobobook.repository.ItemRepository;
-import com.kobobook.www.kobobook.repository.ReviewRepository;
 import com.kobobook.www.kobobook.service.ItemService;
-import com.kobobook.www.kobobook.service.JwtService;
 import com.kobobook.www.kobobook.service.ReviewService;
-import io.jsonwebtoken.JwtException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 @Slf4j
 @CrossOrigin(origins = "*")
@@ -41,8 +28,6 @@ public class ItemApiController {
     private ItemService itemService;
 
     private ReviewService reviewService;
-
-    private JwtService jwtService;
 
     /*
     * 카테고리별 아이템
@@ -65,7 +50,6 @@ public class ItemApiController {
     * */
     @GetMapping("/autocomplete")
     public ResponseEntity<List<Autocomplete>> readItemsByAutocomplete(@RequestParam("userQuery") String userQuery) {
-        System.out.println(userQuery);
         return new ResponseEntity<>(itemService.readItemsByAutocomplete(userQuery), HttpStatus.OK);
     }
 

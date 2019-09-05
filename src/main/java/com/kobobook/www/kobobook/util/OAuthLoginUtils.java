@@ -8,7 +8,6 @@ import com.google.gson.JsonParser;
 import com.kobobook.www.kobobook.domain.Member;
 import com.kobobook.www.kobobook.service.JwtService;
 import com.kobobook.www.kobobook.service.MemberService;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

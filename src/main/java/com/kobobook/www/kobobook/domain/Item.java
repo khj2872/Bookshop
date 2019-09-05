@@ -3,16 +3,17 @@ package com.kobobook.www.kobobook.domain;
 import com.kobobook.www.kobobook.exception.NotEnoughStockException;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
+@ToString(exclude = "reviews")
 public class Item {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,8 +43,7 @@ public class Item {
 
     private double avgRating;
 
-//    @JsonManagedReference
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Category category;
 
     private String image;

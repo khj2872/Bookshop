@@ -3,7 +3,7 @@
     <!-- Spring Boot의 logback 설정은 유지하면서 확장 -->
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
-    <springProfile name="set1">
+    <springProfile name="set2">
         <property name="LOG_DIR" value="/home/ec2-user/app/log/kobobook-api/" />
 
         <appender name="dailyRollingFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">

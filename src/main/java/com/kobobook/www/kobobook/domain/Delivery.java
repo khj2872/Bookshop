@@ -5,6 +5,7 @@ import com.kobobook.www.kobobook.dto.OrderInfo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -12,6 +13,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString(exclude = "order")
 public class Delivery {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,12 +35,4 @@ public class Delivery {
         this.status = status;
     }
 
-    @Override
-    public String toString() {
-        return "Delivery{" +
-                "id=" + id +
-                ", address=" + address +
-                ", status=" + status +
-                '}';
-    }
 }

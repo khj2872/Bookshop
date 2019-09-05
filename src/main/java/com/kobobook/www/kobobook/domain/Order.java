@@ -13,6 +13,7 @@ import java.util.*;
 @Table(name = "ORDERS")
 @Getter
 @Setter
+@ToString
 public class Order {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -92,17 +93,4 @@ public class Order {
         orderItem.setOrder(this);
     }
 
-    @Override
-    public String toString() {
-        return "Order{" +
-                "id=" + id +
-                ", member=" + member +
-                ", orderItems=" + orderItems +
-                ", delivery=" + delivery +
-                ", orderDate=" + orderDate +
-                ", status=" + status +
-                ", usingPoint=" + usingPoint +
-                ", savingPoint=" + savingPoint +
-                '}';
-    }
 }

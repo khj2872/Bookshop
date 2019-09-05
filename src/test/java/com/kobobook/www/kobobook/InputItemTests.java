@@ -3,12 +3,12 @@ package com.kobobook.www.kobobook;
 import com.kobobook.www.kobobook.domain.Item;
 import com.kobobook.www.kobobook.repository.CategoryRepository;
 import com.kobobook.www.kobobook.repository.ItemRepository;
-import lombok.AllArgsConstructor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -19,16 +19,16 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@AllArgsConstructor
 public class InputItemTests {
 
+    @Autowired
     private CategoryRepository categoryRepository;
 
+    @Autowired
     private ItemRepository itemRepository;
 
     @Test
@@ -73,7 +73,7 @@ public class InputItemTests {
             item.setStock(100l);
             item.setSavingRate(5);
             item.setRegDate(LocalDateTime.now());
-            item.setCategory(categoryRepository.findById(7).get());
+            item.setCategory(categoryRepository.findById(1).get());
 
             itemList.add(item);
         }
@@ -82,10 +82,10 @@ public class InputItemTests {
     }
 
     private String readData() {
-        String clientId = "pDdF5npa0HKcbAGKno90";//애플리케이션 클라이언트 아이디값";
-        String clientSecret = "Yv7dxNIKed";//애플리케이션 클라이언트 시크릿값";
+        String clientId = "aXJAQ9m_D_59dFXwH6Op";//애플리케이션 클라이언트 아이디값";
+        String clientSecret = "pYBBRnj1UQ";//애플리케이션 클라이언트 시크릿값";
         try {
-            String text = URLEncoder.encode("다이어트", "UTF-8");
+            String text = URLEncoder.encode("물리", "UTF-8");
             int display = 100;
             String apiURL = "https://openapi.naver.com/v1/search/book.json?query=" + text + "&display=" + display; // json 결과
             URL url = new URL(apiURL);

@@ -12,7 +12,7 @@ import java.util.Date;
 @Setter
 @Getter
 @ToString
-@Document(indexName = "item", type = "_doc")
+@Document(indexName = "items", type = "_doc")
 @Setting(settingPath = "/settings/settings.json")
 @Mapping(mappingPath = "/mappings/mappings.json")
 public class EsItem implements Serializable {

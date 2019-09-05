@@ -2,6 +2,7 @@ package com.kobobook.www.kobobook.domain;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -10,6 +11,7 @@ import java.util.Date;
 @Entity
 @Getter
 @Setter
+@ToString
 public class Review {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,16 +41,7 @@ public class Review {
         review.setRegDate(LocalDateTime.now());
 
         return review;
+
     }
 
-    @Override
-    public String toString() {
-        return "Review{" +
-                "id=" + id +
-                ", member=" + member +
-                ", rating=" + rating +
-                ", regDate=" + regDate +
-                ", content='" + content + '\'' +
-                '}';
-    }
 }

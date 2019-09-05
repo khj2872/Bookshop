@@ -18,8 +18,6 @@ public class WebConfig implements WebMvcConfigurer {
 
     private JwtInterceptor jwtInterceptor;
 
-//    private AccessLoggingFilter accessLoggingFilter;
-
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(jwtInterceptor)
@@ -27,12 +25,5 @@ public class WebConfig implements WebMvcConfigurer {
                 .excludePathPatterns(EXCLUDE_PATHS);
     }
 
-//    @Bean
-//    public FilterRegistrationBean<AccessLoggingFilter> filterRegistrationBean() {
-//        FilterRegistrationBean<AccessLoggingFilter> filterRegistrationBean = new FilterRegistrationBean<>();
-//        filterRegistrationBean.setFilter(accessLoggingFilter);
-//        filterRegistrationBean.addUrlPatterns("/*");
-//        return filterRegistrationBean;
-//    }
 
 }

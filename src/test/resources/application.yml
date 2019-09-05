@@ -1,0 +1,30 @@
+spring:
+  profiles:
+    active: local
+
+---
+spring:
+  profiles: local
+  datasource:
+    url: jdbc:mariadb://localhost:3306/shop
+    username: user1
+    password: 1234
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+elasticsearch:
+  host: 127.0.0.1
+  port: 9300
+  clusterName: javacafe-cluster
+
+naver:
+  clientId: aXJAQ9m_D_59dFXwH6Op
+  clientSecret: pYBBRnj1UQ
+  accessTokenUri: https://nid.naver.com/oauth2.0/token?grant_type=authorization_code
+  userInfoUri: https://openapi.naver.com/v1/nid/me

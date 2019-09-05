@@ -10,7 +10,7 @@ import java.io.Serializable;
 @Setter
 @Getter
 @ToString
-@Document(indexName = "please", type = "_doc")
+@Document(indexName = "items", type = "_doc")
 public class Autocomplete implements Serializable {
 
     private String name;
