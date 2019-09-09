@@ -1,6 +1,7 @@
 package com.kobobook.www.kobobook.domain;
 
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -13,6 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString(exclude = "items")
+@Builder
 public class Category {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

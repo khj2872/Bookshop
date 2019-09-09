@@ -30,11 +30,12 @@ public class CartApiController {
     * 장바구니 항목 추가
     * */
     @PostMapping("")
-    public ResponseEntity<Integer> createCart(@RequestBody Map<String, Object> param) {
+    public ResponseEntity<Void> createCart(@RequestBody Map<String, Object> param) {
         Integer memberId = (Integer) jwtService.getString("userId");
         Integer itemId = (Integer) param.get("itemId");
         Integer count = (Integer) param.get("count");
-        return new ResponseEntity<>(cartService.createCart(memberId, itemId, count), HttpStatus.OK);
+        cartService.createCart(memberId, itemId, count);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /*
@@ -60,7 +61,6 @@ public class CartApiController {
     @GetMapping("")
     public ResponseEntity<List<CartDTO>> readCartList() {
         List<CartDTO> cartDTOList = cartService.readCartList((Integer) jwtService.getString("userId"));
-        System.out.println("444444444");
         return new ResponseEntity<>(cartDTOList, HttpStatus.OK);
     }
 

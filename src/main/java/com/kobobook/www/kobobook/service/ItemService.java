@@ -4,10 +4,7 @@ import com.kobobook.www.kobobook.domain.Item;
 import com.kobobook.www.kobobook.dto.ItemDTO;
 import com.kobobook.www.kobobook.elasticsearch.Autocomplete;
 import com.kobobook.www.kobobook.elasticsearch.EsItem;
-import com.kobobook.www.kobobook.repository.CategoryRepository;
-import com.kobobook.www.kobobook.repository.EsItemRepository;
 import com.kobobook.www.kobobook.repository.ItemRepository;
-import com.kobobook.www.kobobook.repository.ReviewRepository;
 import lombok.AllArgsConstructor;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -124,14 +121,14 @@ public class ItemService {
     @Transactional
     @Cacheable(value = "readItemsByCategoryCache", key = "#categoryId")
     public Page<ItemDTO.ItemSimple> readItemsByCategory(Integer categoryId) {
-        return itemRepository.findByCategory(categoryId, PageRequest.of(0, 20))
+        return itemRepository.findByCategoryId(categoryId, PageRequest.of(0, 20))
                 .map(i -> modelMapper.map(i, ItemDTO.ItemSimple.class));
     }
 
     @Transactional
     @Cacheable(value = "readItemDetail", key = "#itemId")
     public ItemDTO.ItemWithCategory readItemDetail(Integer itemId) {
-        Item item = itemRepository.findItemWithCategoryAndReviews(itemId);
+        Item item = itemRepository.findItemWithCategory(itemId);
 
         return modelMapper.map(item, ItemDTO.ItemWithCategory.class);
     }

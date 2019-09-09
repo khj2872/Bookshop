@@ -1,17 +1,18 @@
 package com.kobobook.www.kobobook.domain;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Getter
 @Setter
 @ToString
+@Builder
 public class Review {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,18 +31,15 @@ public class Review {
     private String content;
 
     public static Review createReview(Member member, Item item, double rating, String content) {
-        Review review = new Review();
-        review.setMember(member);
-
-        review.setItem(item);
+        Review review = Review.builder()
+                .member(member)
+                .item(item)
+                .rating(rating)
+                .content(content)
+                .regDate(LocalDateTime.now())
+                .build();
         item.getReviews().add(review);
-
-        review.setRating(rating);
-        review.setContent(content);
-        review.setRegDate(LocalDateTime.now());
-
         return review;
-
     }
 
 }

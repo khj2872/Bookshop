@@ -11,11 +11,11 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
     @Query("SELECT i " +
             "FROM Item i " +
             "WHERE i.category.id = :categoryId")
-    Page<Item> findByCategory(Integer categoryId, Pageable pageable);
+    Page<Item> findByCategoryId(Integer categoryId, Pageable pageable);
 
     @Query("SELECT i " +
-            "FROM Item i JOIN FETCH i.category LEFT JOIN FETCH i.reviews " +
+            "FROM Item i JOIN FETCH i.category " +
             "WHERE i.id = :itemId ")
-    Item findItemWithCategoryAndReviews(Integer itemId);
+    Item findItemWithCategory(Integer itemId);
 
 }

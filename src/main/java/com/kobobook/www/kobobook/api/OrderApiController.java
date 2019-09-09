@@ -39,7 +39,7 @@ public class OrderApiController {
     * */
     @PostMapping("")
     public ResponseEntity<Integer> createCartOrder(@RequestBody OrderInfo orderInfo) {
-        Integer orderId = orderService.cartOrder((Integer) jwtService.getString("userId"), orderInfo);
+        Integer orderId = orderService.createOrder((Integer) jwtService.getString("userId"), orderInfo);
         return new ResponseEntity<>(orderId, HttpStatus.OK);
     }
 

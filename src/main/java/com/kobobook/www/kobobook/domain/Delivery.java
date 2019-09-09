@@ -2,10 +2,7 @@ package com.kobobook.www.kobobook.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kobobook.www.kobobook.dto.OrderInfo;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -30,6 +27,7 @@ public class Delivery {
     @Enumerated(EnumType.STRING)
     private DeliveryStatus status;
 
+    @Builder
     public Delivery(OrderInfo orderInfo, DeliveryStatus status) {
         this.address = orderInfo.getAddress();
         this.status = status;

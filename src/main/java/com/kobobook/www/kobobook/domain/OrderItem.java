@@ -2,6 +2,7 @@ package com.kobobook.www.kobobook.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -12,6 +13,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 @Entity
 @Getter
 @Setter
+@ToString
+@Builder
 public class OrderItem {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,11 +33,11 @@ public class OrderItem {
     private int count;
 
     public static OrderItem createOrderItem(Item item, long price, int count) {
-        OrderItem orderItem = new OrderItem();
-        orderItem.setItem(item);
-        orderItem.setPrice(price);
-        orderItem.setCount(count);
-
+        OrderItem orderItem = OrderItem.builder()
+                .item(item)
+                .price(price)
+                .count(count)
+                .build();
         item.removeStock(count);
         return orderItem;
     }
@@ -47,13 +50,4 @@ public class OrderItem {
         return getPrice() * getCount();
     }
 
-    @Override
-    public String toString() {
-        return "OrderItem{" +
-                "id=" + id +
-                ", item=" + item +
-                ", price=" + price +
-                ", count=" + count +
-                '}';
-    }
 }

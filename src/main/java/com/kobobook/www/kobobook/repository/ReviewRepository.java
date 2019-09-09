@@ -1,9 +1,7 @@
 package com.kobobook.www.kobobook.repository;
 
 import com.kobobook.www.kobobook.domain.Item;
-import com.kobobook.www.kobobook.domain.Member;
 import com.kobobook.www.kobobook.domain.Review;
-import com.kobobook.www.kobobook.dto.ReviewDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

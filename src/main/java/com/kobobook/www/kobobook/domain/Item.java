@@ -1,9 +1,7 @@
 package com.kobobook.www.kobobook.domain;
 
 import com.kobobook.www.kobobook.exception.NotEnoughStockException;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -13,7 +11,8 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@ToString(exclude = "reviews")
+@ToString
+@Builder
 public class Item {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

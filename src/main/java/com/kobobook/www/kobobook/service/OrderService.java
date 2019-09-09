@@ -1,9 +1,11 @@
 package com.kobobook.www.kobobook.service;
 
 import com.kobobook.www.kobobook.domain.*;
-import com.kobobook.www.kobobook.dto.OrderInfo;
 import com.kobobook.www.kobobook.dto.OrderDTO;
-import com.kobobook.www.kobobook.repository.*;
+import com.kobobook.www.kobobook.dto.OrderInfo;
+import com.kobobook.www.kobobook.repository.CartRepository;
+import com.kobobook.www.kobobook.repository.MemberRepository;
+import com.kobobook.www.kobobook.repository.OrderRepository;
 import com.kobobook.www.kobobook.repository.custom.OrderRepositoryImpl;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -31,12 +33,13 @@ public class OrderService {
     * 상품 주문
     * */
     @Transactional
-    public Integer cartOrder(Integer memberId, OrderInfo orderInfo) {
+    public Integer createOrder(Integer memberId, OrderInfo orderInfo) {
+        int orderListSize = orderInfo.getOrderListId().length;
         Member member = memberRepository.findById(memberId).orElse(null);
-        OrderItem[] orderItems = new OrderItem[orderInfo.getOrderListId().length];
+        OrderItem[] orderItems = new OrderItem[orderListSize];
 
         long savingPoint = 0;
-        for(int i = 0; i< orderInfo.getOrderListId().length; i++) {
+        for(int i=0; i<orderListSize; i++) {
             Cart cart = cartRepository.findById(orderInfo.getOrderListId()[i]).orElse(null);
             orderItems[i] = OrderItem.createOrderItem(cart.getItem(), cart.getItem().getPrice(), cart.getCount());
             savingPoint += cart.getItem().getPrice() * cart.getCount() * cart.getItem().getSavingRate() / 100;
@@ -55,7 +58,7 @@ public class OrderService {
     * 주문 취소
     * */
     @Transactional
-    public void cancelOrder(Integer orderId) throws RuntimeException{
+    public void cancelOrder(Integer orderId) {
         Order order = orderRepository.findById(orderId).orElse(null);
         order.cancel();
     }
@@ -75,7 +78,7 @@ public class OrderService {
     @Transactional
     public List<OrderDTO> readCompleteOrderList(Integer memberId, OrderSearch orderSearch) {
         return orderRepositoryImpl.searchList(memberId, orderSearch).stream()
-                .map(o -> convertToDto(o))
+                .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
 

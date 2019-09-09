@@ -128,10 +128,12 @@ public class OAuthLoginUtils {
         String username = userInfoObj.get("name").getAsString();
         String userEmail = userInfoObj.get("email").getAsString();
 
-        Member member = new Member();
-        member.setUsername(username);
-        member.setUserEmail(userEmail);
-        member.setOauthId(oauthId);
+        Member member = Member.builder()
+                .username(username)
+                .userEmail(userEmail)
+                .oauthId(oauthId)
+                .build();
+
         Member newMember = memberService.oauthSignUp(member);
 
         return jwtService.createMember(newMember.getId(), newMember.getRole().toString());

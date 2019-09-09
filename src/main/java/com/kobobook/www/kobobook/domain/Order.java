@@ -1,6 +1,7 @@
 package com.kobobook.www.kobobook.domain;
 
 import com.fasterxml.jackson.annotation.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -14,6 +15,7 @@ import java.util.*;
 @Getter
 @Setter
 @ToString
+@Builder
 public class Order {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,19 +42,19 @@ public class Order {
     private long savingPoint;
 
     public static Order createOrder(Member member, Delivery delivery, long usingPoint, long savingPoint, OrderItem... orderItems) {
-        Order order = new Order();
-        order.setMember(member);
-        order.setDelivery(delivery);
+        Order order = Order.builder()
+                .member(member)
+                .delivery(delivery)
+                .usingPoint(usingPoint)
+                .savingPoint(savingPoint)
+                .status(OrderStatus.ORDER)
+                .orderDate(LocalDateTime.now())
+                .build();
         delivery.setOrder(order);
 
-        for(OrderItem orderItem : orderItems) {
-            order.addOrderItem(orderItem);
-        }
+        Arrays.stream(orderItems)
+                .forEach(order::addOrderItem);
 
-        order.setUsingPoint(usingPoint);
-        order.setSavingPoint(savingPoint);
-        order.setStatus(OrderStatus.ORDER);
-        order.setOrderDate(LocalDateTime.now());
         return order;
     }
 

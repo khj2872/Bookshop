@@ -33,18 +33,15 @@ public class CartService {
     * 장바구니 항목 추가
     * */
     @Transactional
-    public Integer createCart(Integer memberId, Integer itemId, int count) {
-        System.out.println("itemId : " + itemId + "count : " + count);
+    public void createCart(Integer memberId, Integer itemId, int count) {
         Member member = memberRepository.findById(memberId).orElse(null);
         Item item = itemRepository.findById(itemId).orElse(null);
 
         Cart dupChkCart = cartRepository.findByMemberAndItem(member, item);
-        if(dupChkCart != null) {
+        if(dupChkCart != null) { // 장바구니에 이미 담겨있을 경우
             dupChkCart.setCount(count);
-            return dupChkCart.getId();
-        } else {
-            Cart cart = cartRepository.save(Cart.createCart(member, item, count, item.getSavingRate()));
-            return cart.getId();
+        } else { // 새로운 상품일 경우
+            cartRepository.save(Cart.createCart(member, item, count, item.getSavingRate()));
         }
     }
 
@@ -55,11 +52,8 @@ public class CartService {
     public List<CartDTO> readCartList(Integer memberId) {
         Member member = memberRepository.findById(memberId).orElse(null);
         List<Cart> carts = cartRepository.findByMember(member);
-        for(Cart cart : carts) {
-            cart.setPrice(cart.getItem().getPrice());
-        }
-        List<CartDTO> cartDTOList = convertToDto(carts);
-        return cartDTOList;
+        carts.forEach(cart -> cart.setPrice(cart.getItem().getPrice()));
+        return convertToDto(carts);
     }
 
     /*

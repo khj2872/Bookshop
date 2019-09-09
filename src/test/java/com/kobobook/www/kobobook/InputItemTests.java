@@ -43,8 +43,6 @@ public class InputItemTests {
         JSONArray items = (JSONArray) jsonObject.get("items");
 
         for(int i=0; i<items.size(); i++) {
-            Item item = new Item();
-
             JSONObject tmp = (JSONObject) items.get(i);
             String title = (String) tmp.get("title");
             String isbn = (String) tmp.get("isbn");
@@ -63,17 +61,19 @@ public class InputItemTests {
             System.out.println("publicationDate : " + publicationDate);
             System.out.println("image : " + image);
 
-            item.setName(title.replace("<b>", "").replace("</b>", ""));
-            item.setISBN(isbn);
-            item.setWriter(author);
-            item.setPrice(price);
-            item.setDetail(detail.replace("<b>", "").replace("</b>", ""));
-            item.setPublicationDate(publicationDate);
-            item.setImage(image);
-            item.setStock(100l);
-            item.setSavingRate(5);
-            item.setRegDate(LocalDateTime.now());
-            item.setCategory(categoryRepository.findById(1).get());
+            Item item = Item.builder()
+                    .name(title.replace("<b>", "").replace("</b>", ""))
+                    .ISBN(isbn)
+                    .writer(author)
+                    .price(price)
+                    .detail(detail.replace("<b>", "").replace("</b>", ""))
+                    .publicationDate(publicationDate)
+                    .image(image)
+                    .stock(100l)
+                    .savingRate(5)
+                    .regDate(LocalDateTime.now())
+                    .category(categoryRepository.findById(1).get())
+                    .build();
 
             itemList.add(item);
         }

@@ -2,9 +2,7 @@ package com.kobobook.www.kobobook.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -12,6 +10,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @ToString
+@Builder
 public class Cart {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,13 +31,12 @@ public class Cart {
     private double savingRate;
 
     public static Cart createCart(Member member, Item item, int count, double savingRate) {
-        Cart cart = new Cart();
-        cart.setMember(member);
-        cart.setItem(item);
-        cart.setCount(count);
-        cart.setSavingRate(savingRate);
-
-        return cart;
+        return Cart.builder()
+                .member(member)
+                .item(item)
+                .count(count)
+                .savingRate(savingRate)
+                .build();
     }
 
 }
