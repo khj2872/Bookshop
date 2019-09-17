@@ -15,42 +15,46 @@ cache:
     - '$HOME/.m2/repository'
     - '$HOME/.maven'
 
-script: "./mvnw clean package -Dmaven.test.skip=true"
+#script: "./mvnw clean package -Dmaven.test.skip=true"
 
-before_deploy:
-  - zip -r kobobook-webservice-api *
-  - mkdir -p deploy/api
-  - mv kobobook-webservice-api.zip deploy/api/kobobook-webservice-api.zip
+script: "./mvnw clean package"
 
-deploy:
-  - provider: s3
-    access_key_id: $AWS_ACCESS_KEY
-    secret_access_key: $AWS_SECRET_KEY
-    bucket: kobobook-deploy
-    region: ap-northeast-2
-    skip_cleanup: true
-    acl: public_read
-    local_dir: deploy
-    wait-until-deployed: true
-    on:
-      repo: khj2872/Bookshop
-      branch: master
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
 
-  - provider: codedeploy
-    access_key_id: $AWS_ACCESS_KEY
-    secret_access_key: $AWS_SECRET_KEY
-    bucket: kobobook-deploy
-    key: api/kobobook-webservice-api.zip # S3 버킷에 저장된 kobobook-webservice-api.zip 파일을 EC2로 배포
-    bundle_type: zip
-    application: kobobook-webservice-api # 웹 콘솔에서 등록한 CodeDeploy 어플리케이션
-    deployment_group: kobobook-webservice-group # 웹 콘솔에서 등록한 CodeDeploy 배포 그룹
-    region: ap-northeast-2
-    wait-until-deployed: true
-    on:
-      repo: khj2872/Bookshop
-      branch: master
+#before_deploy:
+#  - zip -r kobobook-webservice-api *
+#  - mkdir -p deploy/api
+#  - mv kobobook-webservice-api.zip deploy/api/kobobook-webservice-api.zip
 
-# CI 실행 완료시 메일로 알람
+#deploy:
+#  - provider: s3
+#    access_key_id: $AWS_ACCESS_KEY
+#    secret_access_key: $AWS_SECRET_KEY
+#    bucket: kobobook-deploy
+#    region: ap-northeast-2
+#    skip_cleanup: true
+#    acl: public_read
+#    local_dir: deploy
+#    wait-until-deployed: true
+#    on:
+#      repo: khj2872/Bookshop
+#      branch: master
+#
+#  - provider: codedeploy
+#    access_key_id: $AWS_ACCESS_KEY
+#    secret_access_key: $AWS_SECRET_KEY
+#    bucket: kobobook-deploy
+#    key: api/kobobook-webservice-api.zip # S3 버킷에 저장된 kobobook-webservice-api.zip 파일을 EC2로 배포
+#    bundle_type: zip
+#    application: kobobook-webservice-api # 웹 콘솔에서 등록한 CodeDeploy 어플리케이션
+#    deployment_group: kobobook-webservice-group # 웹 콘솔에서 등록한 CodeDeploy 배포 그룹
+#    region: ap-northeast-2
+#    wait-until-deployed: true
+#    on:
+#      repo: khj2872/Bookshop
+#      branch: master
+
 notifications:
   email:
     recipients:
