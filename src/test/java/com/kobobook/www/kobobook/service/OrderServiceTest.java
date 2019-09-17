@@ -71,14 +71,14 @@
 //
 //        //when
 //        Integer orderId = orderService.createOrder(savedMember.getId(), orderInfo);
-//        Order found = orderRepository.findById(orderId).orElse(null);
+//        Order found = orderRepository.findById(orderId).get();
 //
 //        //then
 //        assertThat(found.getMember().getUsername()).isEqualTo("kang");
 //        assertThat(found.getOrderItems().get(0).getItem().getName()).isEqualTo("책");
 //
 //    }
-
+//
 //    @Test
 //    public void testCancelOrder() {
 //        //given
@@ -114,8 +114,8 @@
 //                .build();
 //
 //        //when
-//        orderService.cancelOrder(order);
+////        orderService.cancelOrder(order);
 //        //then
 //    }
-
+//
 //}
