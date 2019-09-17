@@ -12,6 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,12 +37,13 @@ public class OrderService {
     public Integer createOrder(Integer memberId, OrderInfo orderInfo) {
         int orderListSize = orderInfo.getOrderListId().length;
         Member member = memberRepository.findById(memberId).orElse(null);
-        OrderItem[] orderItems = new OrderItem[orderListSize];
+//        OrderItem[] orderItems = new OrderItem[orderListSize];
+        List<OrderItem> orderItems = new ArrayList<>(orderListSize);
 
         long savingPoint = 0;
         for(int i=0; i<orderListSize; i++) {
             Cart cart = cartRepository.findById(orderInfo.getOrderListId()[i]).orElse(null);
-            orderItems[i] = OrderItem.createOrderItem(cart.getItem(), cart.getItem().getPrice(), cart.getCount());
+            orderItems.add(OrderItem.createOrderItem(cart.getItem(), cart.getItem().getPrice(), cart.getCount()));
             savingPoint += cart.getItem().getPrice() * cart.getCount() * cart.getItem().getSavingRate() / 100;
             cartRepository.delete(cart);
         }

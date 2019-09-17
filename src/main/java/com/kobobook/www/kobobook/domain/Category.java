@@ -1,10 +1,7 @@
 package com.kobobook.www.kobobook.domain;
 
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -14,6 +11,8 @@ import java.util.List;
 @Getter
 @Setter
 @ToString(exclude = "items")
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class Category {
 
