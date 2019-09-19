@@ -1,4 +1,4 @@
-# Toy Project: Spring Boot와 Vue.js를 이용한 도서 쇼핑몰 [![Build Status](https://travis-ci.org/khj2872/Bookshop.svg?branch=master)](https://travis-ci.org/khj2872/Bookshop) [![codecov](https://codecov.io/gh/khj2872/Bookshop/branch/master/graph/badge.svg)](https://codecov.io/gh/khj2872/Bookshop)
+# Toy Project: Spring Boot와 Vue.js를 이용한 도서 쇼핑몰 [![Build Status](https://travis-ci.org/khj2872/Bookshop.svg?branch=master)](https://travis-ci.org/khj2872/Bookshop)
 처음 다뤄보는 기술 스택(Vue.js, JPA, Elastic Stack, AWS ···)들을 사용하여 만든 관리자-사용자 기반의 도서 쇼핑몰
 
 [클라이언트](https://github.com/khj2872/Bookshop_Front)
